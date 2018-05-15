@@ -51,14 +51,14 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 [ico-version]: https://img.shields.io/packagist/v/webfactor/laravel-backpack-instant-fields.svg?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
-[ico-style-ci]: https://styleci.io/repos/125574603/shield
+[ico-style-ci]: https://styleci.io/repos/133576169/shield
 [ico-travis]: https://img.shields.io/travis/webfactor/laravel-backpack-instant-fields/master.svg?style=flat-square
 [ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/webfactor/laravel-backpack-instant-fields.svg?style=flat-square
 [ico-code-quality]: https://img.shields.io/scrutinizer/g/webfactor/laravel-backpack-instant-fields.svg?style=flat-square
 [ico-downloads]: https://img.shields.io/packagist/dt/webfactor/laravel-backpack-instant-fields.svg?style=flat-square
 
 [link-packagist]: https://packagist.org/packages/webfactor/laravel-backpack-instant-fields
-[link-style-ci]: https://styleci.io/repos/125574603
+[link-style-ci]: https://styleci.io/repos/133576169
 [link-travis]: https://travis-ci.org/webfactor/laravel-backpack-instant-fields
 [link-scrutinizer]: https://scrutinizer-ci.com/g/webfactor/laravel-backpack-instant-fields/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/webfactor/laravel-backpack-instant-fields
