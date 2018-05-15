@@ -1,0 +1,59 @@
+{
+    "name": "webfactor/laravel-backpack-instant-fields",
+    "type": "library",
+    "description": "Instant fields to create related entities on the fly in Laravel Backpack",
+    "keywords": [
+        "webfactor",
+        "laravel",
+        "backpack",
+        "instant fields",
+        "on-the-fly",
+        "modal"
+    ],
+    "homepage": "https://github.com/webfactor/laravel-backpack-instant-fields",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thomas Swonke",
+            "email": "thomas.swonke@webfactor.de",
+            "homepage": "http://webfactor.de",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "illuminate/support": "~5.5.0|~5.6.0",
+        "illuminate/database": "~5.5.0|~5.6.0",
+        "php": "~7.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~6.0",
+        "squizlabs/php_codesniffer": "^2.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webfactor\\Laravel\\Backpack\\InstantFields\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webfactor\\Laravel\\Backpack\\InstantFields\\InstantFieldsServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
