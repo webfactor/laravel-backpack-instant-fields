@@ -2,6 +2,8 @@
 
 namespace Webfactor\Laravel\Backpack\InstantFields;
 
+use Illuminate\Http\Request;
+
 trait CanBeCreatedOnTheFly
 {
     /**
@@ -35,7 +37,7 @@ trait CanBeCreatedOnTheFly
     {
         $this->crud->hasAccessOrFail('create');
 
-        return \View::make('backpack_ajax.create')
+        return \View::make('webfactor::modal.create')
             ->with('action', 'create')
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
@@ -46,12 +48,13 @@ trait CanBeCreatedOnTheFly
     }
 
     /**
-     * Checks permission and tries to store on-the-fly entity
+     * Checks permission and tries to store on-the-fly entity. If you want to enable request validation,
+     * please copy this method in your EntityCrudController and replace Request by your StoreRequest.
      *
      * @param StoreRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function ajaxStore(StoreRequest $request)
+    public function ajaxStore(Request $request)
     {
         if (!$this->crud->hasAccess('create')) {
             return $this->ajaxRespondNoPermission();
