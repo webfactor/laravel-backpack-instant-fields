@@ -20,7 +20,7 @@ class InstantFieldsServiceProvider extends ServiceProvider
         $this->loadViewsFrom(realpath(__DIR__ . '/../resources/views'), 'webfactor');
 
         // publish fields
-        $this->publishes([__DIR__ . '/../resources/views/fields' => resource_path('views/vendor/backpack/crud/fields')], 'fields');
+        $this->publishes([__DIR__ . '/../resources/views/fields' => resource_path('views/vendor/backpack/crud/fields')], 'instantfields');
     }
 
     /**
