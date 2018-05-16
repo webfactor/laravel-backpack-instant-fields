@@ -19,6 +19,16 @@ trait CanBeCreatedOnTheFly
     }
 
     /**
+     * Sets $ajaxEntity property to use if more than one on-the-fly field is used
+     *
+     * @return void
+     */
+    public function setAjaxEntity(string $entity)
+    {
+        $this->ajaxEntity = $entity;
+    }
+
+    /**
      * Provides the search algorithm for the select2 field. Overwrite it in
      * the EntityCrudController if you need some special functionalities
      *
