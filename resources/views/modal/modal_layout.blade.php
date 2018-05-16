@@ -1,5 +1,7 @@
 @stack('crud_fields_styles')
-{!! Form::open(['id' => 'create_'.$entity, 'files'=>$crud->hasUploadFields('create')]) !!}
+<form method="post" id="{{ 'create_'.$entity }}" accept-charset="UTF-8">
+    {{--'files'=>$crud->hasUploadFields('create')])--}}
+    {{ csrf_field() }}
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -13,5 +15,5 @@
 <div class="modal-footer">
     @yield('footer')
 </div>
-{!! Form::close() !!}
+</form>
 @stack('crud_fields_scripts')
