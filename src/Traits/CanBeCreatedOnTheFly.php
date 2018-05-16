@@ -19,14 +19,24 @@ trait CanBeCreatedOnTheFly
     }
 
     /**
-     * Provides the search algorithm for the select2 field
+     * Provides the search algorithm for the select2 field. Overwrite it in
+     * the EntityCrudController if you need some special functionalities
      *
      * @return mixed
      */
-    public function ajaxIndex()
+    public function ajaxIndex(Request $request)
     {
-        // implement search logic
-        return $this->crud->query->paginate(50);
+        $search_term = $request->input('q');
+        $search_key = $request->input('searchkey');
+        $page = $request->input('page');
+
+        if ($search_term) {
+            $results = $this->crud->query->where($search_key, 'LIKE', '%' . $search_term . '%')->paginate(10);
+        } else {
+            $results = $this->crud->query->paginate(10);
+        }
+
+        return $results;
     }
 
     /**

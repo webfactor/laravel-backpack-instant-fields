@@ -63,8 +63,6 @@
 </div>
 
 
-
-
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
 {{-- If a field type is shown multiple times on a form, the CSS and JS will only be loaded once --}}
@@ -121,6 +119,7 @@
                             data: function (params) {
                                 return {
                                     q: params.term, // search term
+                                    searchkey: "{{ $field['attribute'] }}", // search key in database
                                     page: params.page
                                 };
                             },
