@@ -7,7 +7,7 @@
         <span data-value="{{ $saveAction['active']['value'] }}">{{ $saveAction['active']['label'] }}</span>
     </button>
 
-    <button class="btn btn-default" type="button" data-dismiss="modal">
+    <button class="btn btn-default" type="button" data-toggle="modal" data-target="#{{ $entity }}_modal">
         <span class="fa fa-ban"></span> {{ trans('backpack::crud.cancel') }}
     </button>
 </div>
