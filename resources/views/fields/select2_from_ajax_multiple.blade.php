@@ -30,7 +30,7 @@
     </select>
 
     @if (isset($field['on_the_fly']))
-        <button href="{{ $field['on_the_fly']['create_view'] }}"
+        <button href="{{ $field['on_the_fly']['create_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/create' }}"
                 type="button"
                 class="btn btn-primary"
                 data-toggle="modal"
@@ -63,63 +63,65 @@
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
-    <!-- include select2 css-->
-    <link href="{{ asset('vendor/adminlte/bower_components/select2/dist/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- include select2 css-->
+        <link href="{{ asset('vendor/adminlte/bower_components/select2/dist/css/select2.min.css') }}" rel="stylesheet"
+              type="text/css"/>
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-theme/0.1.0-beta.10/select2-bootstrap.min.css"
+            rel="stylesheet" type="text/css"/>
     @endpush
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-    <!-- include select2 js-->
-    <script src="{{ asset('vendor/adminlte/bower_components/select2/dist/js/select2.min.js') }}"></script>
+        <!-- include select2 js-->
+        <script src="{{ asset('vendor/adminlte/bower_components/select2/dist/js/select2.min.js') }}"></script>
     @endpush
 
 @endif
 
 <!-- include field specific select2 js-->
 @push('crud_fields_scripts')
-<script>
-    jQuery(document).ready(function($) {
-        // trigger select2 for each untriggered select2 box
-        $("#select2_ajax_multiple_{{ $field['name'] }}").each(function (i, obj) {
-            if (!$(obj).hasClass("select2-hidden-accessible"))
-            {
-                $(obj).select2({
-                    theme: 'bootstrap',
-                    multiple: true,
-                    placeholder: "{{ $field['placeholder'] }}",
-                    minimumInputLength: "{{ $field['minimum_input_length'] }}",
-                    ajax: {
-                        url: "{{ $field['data_source'] }}",
-                        dataType: 'json',
-                        quietMillis: 250,
-                        data: function (params) {
-                            return {
-                                q: params.term, // search term
-                                searchkey: "{{ $field['attribute'] }}", // search key in database
-                                page: params.page
-                            };
-                        },
-                        processResults: function (data, params) {
-                            params.page = params.page || 1;
+    <script>
+        jQuery(document).ready(function ($) {
+            // trigger select2 for each untriggered select2 box
+            $("#select2_ajax_multiple_{{ $field['name'] }}").each(function (i, obj) {
+                if (!$(obj).hasClass("select2-hidden-accessible")) {
+                    $(obj).select2({
+                        theme: 'bootstrap',
+                        multiple: true,
+                        placeholder: "{{ $field['placeholder'] }}",
+                        minimumInputLength: "{{ $field['minimum_input_length'] }}",
+                        ajax: {
+                            url: "{{ $field['data_source'] ?? '/'.$crud->getRoute().'/ajax' }}",
+                            dataType: 'json',
+                            quietMillis: 250,
+                            data: function (params) {
+                                return {
+                                    q: params.term, // search term
+                                    field: "{{ $field['name'] }}",
+                                    page: params.page
+                                };
+                            },
+                            processResults: function (data, params) {
+                                params.page = params.page || 1;
 
-                            return {
-                                results: $.map(data.data, function (item) {
-                                    return {
-                                        text: item["{{$field['attribute']}}"],
-                                        id: item["{{ $connected_entity_key_name }}"]
-                                    }
-                                }),
-                                more: data.current_page < data.last_page
-                            };
+                                return {
+                                    results: $.map(data.data, function (item) {
+                                        return {
+                                            text: item["{{ $field['attribute'] }}"],
+                                            id: item["{{ $connected_entity_key_name }}"]
+                                        }
+                                    }),
+                                    more: data.current_page < data.last_page
+                                };
+                            },
+                            cache: true
                         },
-                        cache: true
-                    },
-                });
-            }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 @endpush
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}

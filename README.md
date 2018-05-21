@@ -10,6 +10,9 @@
 
 This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create a related CRUD entity on-the-fly while adding/editing another.
 
+![Screenshot](https://www.file-upload.net/download-13140127/Bildschirmfoto2018-05-21um20.00.23.png.html)
+![Screenshot](https://www.file-upload.net/download-13140129/Bildschirmfoto2018-05-21um20.01.18.png.html)
+
 ## Install
 
 ### Via Composer
@@ -22,16 +25,16 @@ composer require webfactor/laravel-backpack-instant-fields
 
 ### EntityCrudController
 
-In the EntityCrudController that is supposed to PROVIDE instant creation (not in the CrudController where you want to USE instant fields!) you have to embed the `CanBeCreatedOnTheFly` trait from this package.
+For simplicity add the `InstantFields` trait from this package to all EntityCrudControllers which are supposed to provide "instant fields" or are triggered by "instant fields".
 
 ```php
 <?php
 
-use Webfactor\Laravel\Backpack\InstantFields\CanBeCreatedOnTheFly;
+use Webfactor\Laravel\Backpack\InstantFields\Instantfields;
 
 class EntityCrudController extends CrudController
 {
-    use CanBeCreatedOnTheFly;
+    use InstantFields;
 
     //
 }
@@ -41,17 +44,21 @@ This trait provides all needed route entry points methods and ajax response meth
 
 ### Routes
 
-in your routes file you have to add three additional routes for you `CRUD::resource`. For clarity we recommend to use the `with()` helper:
+in your routes file you have to add one additional route in your `CRUD::resource` for each Entity that uses the packages trait. For clarity we recommend to use the `with()` helper:
 
  ```php
  <?php
  
 CRUD::resource('entity', 'EntityCrudController')->with(function () {
-    Route::get('entity/ajax/create', 'EntityCrudController@ajaxCreate');
-    Route::get('entity/ajax', 'EntityCrudController@ajaxIndex');
-    Route::post('entity/ajax', 'EntityCrudController@ajaxStore');
+    Route::match(['get', 'post'],'entity/ajax/{create?}', 'EntityCrudController@handleAjaxRequest');
 });
  ```
+
+The trait/route will handle three situations for you:
+
+- search on triggered entity
+- retrieve the HTML for the modal
+- store entity from modal
 
 ### Available Fields
 
@@ -60,11 +67,11 @@ There are two field types available in this package which allow you an instant c
 - [select2_from_ajax](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax)
 - [select2_from_ajax_multiple](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax_multiple)
 
-To use instant creation capability of these field types you have to add the `on-the-fly` key
+To use instant creation capability of these field types you have to add the `on-the-fly` key and set a name for the entity.
 
 ```
 'on_the_fly' => [
-    'create_view' => backpack_url('entity/ajax/create'),
+    'entity' => 'entity' // e.g. user, contact, company, job etc...
 ]
 ```
 
@@ -81,58 +88,72 @@ Example:
     'model'                => Entity::class,
     'entity'               => 'entity',
     'attribute'            => 'name',
-    'data_source'          => backpack_url('entity/ajax'),
     'placeholder'          => 'Choose',
     'minimum_input_length' => 0,
     'on_the_fly'           => [
-        'create_view' => backpack_url('entity/ajax/create'),
+        'entity' => 'entity',
     ],
 ],
 ```
 
 ## Multiple instant fields
 
-If you want to use more than one instant field in a CrudController you have to define separate names for each so that JQuery is able to trigger the modals in the right way.
-
-### EntityCrudController
-
-In the EntityCrudController that provides instant creation you have to set the `$ajaxEntity` property by using the setter in the `setup()`-method:
+If you want to use more than one instant field in a CrudController you have to set the `$ajaxEntity` property by using the setter in the `setup()`-method of the EntityCrudController that is triggered by an "instant field". This has to be the same name as in the field definition:
 
 ```php
 <?php
 
-use Webfactor\Laravel\Backpack\InstantFields\CanBeCreatedOnTheFly;
+use Webfactor\Laravel\Backpack\InstantFields\InstantFields;
 
 class EntityCrudController extends CrudController
 {
-    use CanBeCreatedOnTheFly;
+    use InstantFields;
 
     public function setup()
     {
         // other Backpack options
-        $this->setAjaxEntity('name_of_entity');
+        
+        $this->setAjaxEntity('entity');
         
         // fields/columns definitions
     }
 }
 ```
 
-### Field definition
+## Customization
 
-In the field definition you have to add `entity` to the `on-the-fly` key and give it the exact same name as in the EntityCrudController above.
+### Modal view
+
+By default the modal is loaded automatically by using `entity` in `on_the_fly` of the field definition resulting in `backpack_url($field['on_the_fly']['entity']).'/ajax/create'` in the field blade.
+
+You can overwrite this behavior by setting a `create_view` attribute:
 
 ```
 'on_the_fly' => [
-    'create_view' => backpack_url('entity/ajax/create'),
-    'entity'      => 'name_of_entity',
+    'entity' => 'entity',
+    'create_view => 'route/to/modal/html'
 ]
 ```
 
-## Customization
+### Search logic
 
-### Search behavior
+The "instant field" triggers the `ajaxIndex()` of the `EntityCrudController` where the field is defined and uses the fields `model` and `attribute` parameters to perform the search on the foreign model.  
 
-If you need a different search behavior just overwrite the `ajaxIndex()` method in your `EntityCrudController` and write your own search logic.
+By adding `search_logic` to the field defintion you can implement your own searching behavior:
+
+```
+'search_logic' => function($query, $searchTerm) {
+    return $query->where('name', 'like', '%'.$searchTerm.'%')
+                 ->whereActive()
+                 ->whereSomethingElse();
+},
+```
+
+Furthermore you can then use `attibute` to display enriched values in the dropdown by using an accessor on the model.
+
+### Search data source
+
+If needed you are free to use the `data_source` attribute from the original field blades which come with Laravel Backpack. This is the URL that is triggered by the select2 field for searching.
 
 ### Request validation
 
