@@ -10,8 +10,9 @@
 
 This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create a related CRUD entity on-the-fly while adding/editing another.
 
-![Screenshot](https://ibb.co/gOmXAo)
-![Screenshot](https://ibb.co/dG3qwT)
+![Screenshot](https://webfactor.de/files/modal_1.png)
+
+![Screenshot](https://webfactor.de/files/modal_2.png)
 
 ## Install
 
