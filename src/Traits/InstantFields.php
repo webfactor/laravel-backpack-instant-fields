@@ -4,7 +4,7 @@ namespace Webfactor\Laravel\Backpack\InstantFields;
 
 use Illuminate\Http\Request;
 
-trait CanBeCreatedOnTheFly
+trait InstantFields
 {
     /**
      * Returns the name of the on-the-fly entity. If more than one CRUD field provide on-the-fly you
@@ -29,6 +29,26 @@ trait CanBeCreatedOnTheFly
     }
 
     /**
+     * Handles the incoming ajax requests by default
+     * @param Request $request
+     * @param null $create
+     * @return mixed
+     *
+     */
+    public function handleAjaxRequest(Request $request, $create = null)
+    {
+        if ($create) {
+            return $this->ajaxCreate();
+        }
+
+        if (strtolower($request->method()) == 'post') {
+            return $this->ajaxStore($request);
+        }
+
+        return $this->ajaxIndex($request);
+    }
+
+    /**
      * Provides the search algorithm for the select2 field. Overwrite it in
      * the EntityCrudController if you need some special functionalities
      *
@@ -36,17 +56,16 @@ trait CanBeCreatedOnTheFly
      */
     public function ajaxIndex(Request $request)
     {
-        $search_term = $request->input('q');
-        $search_key = $request->input('searchkey');
+        $searchTerm = $request->input('q');
         $page = $request->input('page');
 
-        if ($search_term) {
-            $results = $this->crud->query->where($search_key, 'LIKE', '%' . $search_term . '%')->paginate(10);
-        } else {
-            $results = $this->crud->query->paginate(10);
+        $field = $this->crud->getFields(null)[$request->input('field')];
+
+        if (isset($field['search_logic']) && is_callable($field['search_logic'])) {
+            return $field['search_logic']($field['model']::query(), $searchTerm)->paginate(10);
         }
 
-        return $results;
+        return $field['model']::where($field['attribute'], 'LIKE', '%' . $searchTerm . '%')->paginate(10);
     }
 
     /**

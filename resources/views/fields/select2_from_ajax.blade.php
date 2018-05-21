@@ -37,7 +37,7 @@
     </select>
 
     @if (isset($field['on_the_fly']))
-        <button href="{{ $field['on_the_fly']['create_view'] }}"
+        <button href="{{ $field['on_the_fly']['create_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/create' }}"
                 type="button"
                 class="btn btn-primary"
                 data-toggle="modal"
@@ -113,13 +113,13 @@
                         allowClear: true,
                         @endif
                         ajax: {
-                            url: "{{ $field['data_source'] }}",
+                            url: "{{ $field['data_source'] ?? '/'.$crud->getRoute().'/ajax' }}",
                             dataType: 'json',
                             quietMillis: 250,
                             data: function (params) {
                                 return {
                                     q: params.term, // search term
-                                    searchkey: "{{ $field['attribute'] }}", // search key in database
+                                    field: "{{ $field['name'] }}",
                                     page: params.page
                                 };
                             },
@@ -128,9 +128,8 @@
 
                                 var result = {
                                     results: $.map(data.data, function (item) {
-                                        textField = "{{ $field['attribute'] }}";
                                         return {
-                                            text: item[textField],
+                                            text: item["{{ $field['attribute'] }}"],
                                             id: item["{{ $connected_entity_key_name }}"]
                                         }
                                     }),
