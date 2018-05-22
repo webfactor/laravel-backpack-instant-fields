@@ -2,6 +2,7 @@
 
 namespace Webfactor\Laravel\Backpack\InstantFields;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 
 trait InstantFields
@@ -26,6 +27,26 @@ trait InstantFields
     public function setAjaxEntity(string $entity)
     {
         $this->ajaxEntity = $entity;
+    }
+
+    /**
+     * Returns instance of FormRequest for request validation if $ajaxStoreRequest is set
+     *
+     * @return FormRequest|null
+     */
+    public function getAjaxStoreRequest()
+    {
+        return isset($this->storeAjaxRequest) ? new $this->storeAjaxRequest : null;
+    }
+
+    /**
+     * Sets $ajaxStoreRequest property to use for request validation
+     *
+     * @return void
+     */
+    public function setAjaxStoreRequest(string $storeAjaxRequest)
+    {
+        $this->storeAjaxRequest = $storeAjaxRequest;
     }
 
     /**
@@ -88,7 +109,7 @@ trait InstantFields
 
     /**
      * Checks permission and tries to store on-the-fly entity. If you want to enable request validation,
-     * please copy this method in your EntityCrudController and replace Request by your StoreRequest.
+     * please set your StoreRequest class by using setAjaxStoreRequest() in your EntityCrudController
      *
      * @param StoreRequest $request
      * @return \Illuminate\Http\JsonResponse
@@ -99,11 +120,33 @@ trait InstantFields
             return $this->ajaxRespondNoPermission();
         }
 
+        if ($storeRequest = $this->getAjaxStoreRequest()) {
+            if ($errors = $this->ajaxValidationFails($request, $storeRequest->rules())) {
+                return response()->json($errors, 422);
+            }
+        }
+
         if (parent::storeCrud($request)) {
             return $this->ajaxRespondCreated();
         }
 
         return $this->ajaxRespondError();
+    }
+
+    /**
+     * Validates the request and returns an error bag if it fails
+     *
+     * @return mixed
+     */
+    public function ajaxValidationFails(Request $request, array $rules)
+    {
+        $validator = \Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $validator->errors();
+        }
+
+        return false;
     }
 
     /**

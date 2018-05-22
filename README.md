@@ -158,7 +158,28 @@ If needed you are free to use the `data_source` attribute from the original fiel
 
 ### Request validation
 
-You can also use Request Validation! Just copy the `ajaxStore()` method to your `EntityCrudController` and replace `Request` by your desired request (usually just `StoreRequest`).
+You can also use Request Validation! Just set the `$ajaxStoreRequest` property by using the provided setter method:
+
+```php
+<?php
+
+use Webfactor\Laravel\Backpack\InstantFields\InstantFields;
+
+class EntityCrudController extends CrudController
+{
+    use InstantFields;
+
+    public function setup()
+    {
+        // other Backpack options
+        
+        $this->setAjaxEntity('entity');
+        $this->setAjaxStoreRequest(\RequestNamespace\StoreRequest::class);
+        
+        // fields/columns definitions
+    }
+}
+```
 
 ### Fields
 
