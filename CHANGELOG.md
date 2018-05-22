@@ -21,7 +21,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
-## 1.0.0 - 2018-05-XX
+## 1.1.0 - 2018-05-23
+
+### Added
+- now request validation can be used without overwriting `ajaxStore()` - just use the `setAjaxStoreRequest()` setter.
+
+## 1.0.0/1.0.5 - 2018-05-21
 
 ### Added
 - initial Version
