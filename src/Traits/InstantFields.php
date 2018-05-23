@@ -4,6 +4,7 @@ namespace Webfactor\Laravel\Backpack\InstantFields;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 
 trait InstantFields
 {
@@ -122,7 +123,7 @@ trait InstantFields
 
         if ($storeRequest = $this->getAjaxStoreRequest()) {
             if ($errors = $this->ajaxValidationFails($request, $storeRequest->rules())) {
-                return response()->json($errors, 422);
+                return response()->json($this->ajaxFormatMessage($errors), 422);
             }
         }
 
@@ -156,7 +157,7 @@ trait InstantFields
      */
     private function ajaxRespondNoPermission()
     {
-        return response()->json(['errors' => 'No permission'], 403);
+        return response()->json($this->ajaxFormatMessage(trans('backpack::base.unauthorized')), 403);
     }
 
     /**
@@ -176,6 +177,28 @@ trait InstantFields
      */
     private function ajaxRespondError()
     {
-        return response()->json(['errors' => 'Could not save'], 422);
+        return response()->json($this->ajaxFormatMessage(trans('backpack::base.error_saving')), 422);
+    }
+
+    /**
+     * Formats the message for the notification
+     *
+     * @return string
+     */
+    private function ajaxFormatMessage($message)
+    {
+        if ($message instanceof MessageBag) {
+            $validationErrors = '<ul>';
+
+            foreach ($message->all() as $validationError) {
+                $validationErrors .= '<li>' . $validationError . '</li>';
+            }
+
+            $validationErrors .= '</ul>';
+
+            return $validationErrors;
+        }
+
+        return $message;
     }
 }

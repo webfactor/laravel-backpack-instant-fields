@@ -21,6 +21,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 1.2.0 - 2018-05-24
+
+### Changed
+- uses translation files for notifications
+- formated validation errors in notifications
+
 ## 1.1.0 - 2018-05-23
 
 ### Added
