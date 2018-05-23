@@ -34,8 +34,8 @@
                 success: function (data) {
                     new PNotify({
                         type: "success",
-                        title: "Erfolg",
-                        text: "gespeichert"
+                        title: "{{ trans('backpack::base.success') }}",
+                        text: "{{ trans('backpack::crud.insert_success') }}"
                     });
 
                     $("#{{ $entity }}_modal").modal('toggle');
@@ -43,8 +43,8 @@
                 error: function (data) {
                     new PNotify({
                         type: "error",
-                        title: "Fehler",
-                        text: "Nicht gespeichert: " + data.responseText
+                        title: "{{ trans('backpack::base.error') }}",
+                        text: "{{ trans('backpack::base.error') }}: " + data.responseJSON
                     });
                 }
             });
