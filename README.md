@@ -31,7 +31,7 @@ For simplicity add the `InstantFields` trait from this package to all EntityCrud
 ```php
 <?php
 
-use Webfactor\Laravel\Backpack\InstantFields\Instantfields;
+use Webfactor\Laravel\Backpack\InstantFields\InstantFields;
 
 class EntityCrudController extends CrudController
 {
