@@ -21,6 +21,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 1.3.0 - 2018-07-16
+
+### Added
+- `addInstantCreateButtonToList()`-method
+
+### Changed
+- some refactoring
+
 ## 1.2.0 - 2018-05-24
 
 ### Changed
