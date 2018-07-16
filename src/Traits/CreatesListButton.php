@@ -18,5 +18,6 @@ trait CreatesListButton
         ];
 
         $this->crud->addButtonFromView('line', $foreignAjaxEntity, 'webfactor::buttons.create');
+        $this->crud->addButtonFromView('bottom', $foreignAjaxEntity, 'webfactor::buttons.fake');
     }
 }
