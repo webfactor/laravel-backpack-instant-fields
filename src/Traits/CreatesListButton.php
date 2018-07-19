@@ -10,7 +10,11 @@ trait CreatesListButton
         string $entity = 'entity_id',
         string $class = 'btn btn-xs btn-default'
     ) {
-        $this->crud->instantCreateButton = [
+        if (!isset($this->crud->instantCreateButtons)) {
+            $this->crud->instantCreateButtons = [];
+        }
+
+        $this->crud->instantCreateButtons[$foreignAjaxEntity] = [
             'name'    => $foreignAjaxEntity,
             'entity'  => $entity,
             'class'   => $class,
