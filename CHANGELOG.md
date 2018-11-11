@@ -21,6 +21,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 1.4.0 - 2018-11-11
+
+### Added
+- allow overriding button views
+
 ## 1.3.0 - 2018-07-16
 
 ### Added
