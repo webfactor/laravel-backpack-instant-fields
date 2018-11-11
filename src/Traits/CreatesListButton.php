@@ -9,7 +9,9 @@ trait CreatesListButton
         string $content,
         string $entity = 'entity_id',
         string $class = 'btn btn-xs btn-default',
-        string $position = 'beginning'
+        string $position = 'beginning',
+        string $createButtonView = 'webfactor::buttons.create',
+        string $fakeButtonView = 'webfactor::buttons.fake'
     ) {
         if (!isset($this->crud->instantCreateButtons)) {
             $this->crud->instantCreateButtons = [];
@@ -22,7 +24,7 @@ trait CreatesListButton
             'content' => $content,
         ];
 
-        $this->crud->addButton('line', $foreignAjaxEntity, 'view', 'webfactor::buttons.create', $position);
-        $this->crud->addButton('bottom', $foreignAjaxEntity, 'view', 'webfactor::buttons.fake');
+        $this->crud->addButton('line', $foreignAjaxEntity, 'view', $createButtonView, $position);
+        $this->crud->addButton('bottom', $foreignAjaxEntity, 'view', $fakeButtonView);
     }
 }
