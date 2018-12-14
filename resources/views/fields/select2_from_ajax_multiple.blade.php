@@ -76,7 +76,7 @@
                         placeholder: "{{ $field['placeholder'] }}",
                         minimumInputLength: "{{ $field['minimum_input_length'] }}",
                         ajax: {
-                            url: "{{ $field['data_source'] ?? '/'.$crud->getRoute().'/ajax' }}",
+                            url: "/{{ ltrim($field['data_source'] ?? $crud->getRoute().'/ajax', '/') }}",
                             dataType: 'json',
                             quietMillis: 250,
                             data: function (params) {

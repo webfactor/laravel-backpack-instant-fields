@@ -29,7 +29,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "/{{ $crud->route . '/ajax' }}",
+                url: "/{{ ltrim($crud->route . '/ajax', '/') }}",
                 data: $("#create_{{ $entity }}").serialize(), // serializes the form's elements.
                 success: function (data) {
                     new PNotify({
