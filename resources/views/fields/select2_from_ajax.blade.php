@@ -30,7 +30,7 @@
                 @endif
 
                 <option value="{{ $item->getKey() }}" selected>
-                    {{ $item->{$field['attribute']} }}
+                    {{ $item->{ $field['value'] ?? $field['attribute']} }}
                 </option>
             @endif
         @endif
@@ -113,7 +113,7 @@
                                 var result = {
                                     results: $.map(data.data, function (item) {
                                         return {
-                                            text: item["{{ $field['attribute'] }}"],
+                                            text: item["{{  $field['value'] ?? $field['attribute'] }}"],
                                             id: item["{{ $connected_entity_key_name }}"]
                                         }
                                     }),
