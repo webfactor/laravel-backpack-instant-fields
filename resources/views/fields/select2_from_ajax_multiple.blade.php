@@ -23,7 +23,7 @@
                     @endphp
                 @endif
                 <option value="{{ $item->getKey() }}" selected>
-                    {{ $field['value'] ?? $item->{$field['attribute']} }}
+                    {{ $item->{$field['value'] ?? $field['attribute']} }}
                 </option>
             @endforeach
         @endif
