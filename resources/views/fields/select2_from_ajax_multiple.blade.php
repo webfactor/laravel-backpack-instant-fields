@@ -23,7 +23,7 @@
                     @endphp
                 @endif
                 <option value="{{ $item->getKey() }}" selected>
-                    {{ $item->{$field['value'] ?? $field['attribute']} }}
+                    {{ $item->{isset($field['option_label']) ? $field['option_label'] : $field['attribute']} }}
                 </option>
             @endforeach
         @endif
@@ -92,7 +92,7 @@
                                 return {
                                     results: $.map(data.data, function (item) {
                                         return {
-                                            text: item["{{ $field['value'] ?? $field['attribute'] }}"],
+                                            text: item["{{ isset($field['option_label']) ? $field['option_label'] : $field['attribute'] }}"],
                                             id: item["{{ $connected_entity_key_name }}"]
                                         }
                                     }),
