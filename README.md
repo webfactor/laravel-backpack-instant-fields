@@ -90,10 +90,12 @@ Example:
     'entity'               => 'entity',
     'attribute'            => 'name',
     'placeholder'          => 'Choose',
+    'pagination'           => 20, // optional, default: 10
     'minimum_input_length' => 0,
     'on_the_fly'           => [
         'entity' => 'entity',
     ],
+    'dependencies'         => ['field1', 'field2'...], // optional, resets this field when changing the given ones
 ],
 ```
 
@@ -143,12 +145,14 @@ The "instant field" triggers the `ajaxIndex()` of the `EntityCrudController` whe
 By adding `search_logic` to the field defintion you can implement your own searching behavior:
 
 ```
-'search_logic' => function($query, $searchTerm) {
+'search_logic' => function($query, $searchTerm, $form) { // Collection $form is optional
     return $query->where('name', 'like', '%'.$searchTerm.'%')
                  ->whereActive()
                  ->whereSomethingElse();
 },
 ```
+
+`Collecion $form` is an optional parameter and provides all current values of your CRUD form. You can use it to manipulate your search depending on actual inputs and in combination with `dependencies` (see [Backpack Documentation](https://backpackforlaravel.com/docs/3.5/crud-fields#select2_from_ajax))
 
 Furthermore you can then use `attibute` to display enriched values in the dropdown by using an accessor on the model.
 

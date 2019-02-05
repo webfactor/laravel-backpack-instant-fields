@@ -35,16 +35,18 @@ trait HandlesAjaxRequest
      */
     public function ajaxIndex(Request $request)
     {
-        $searchTerm = $request->input('q');
-        $page = $request->input('page');
-
         $field = $this->crud->getFields(null)[$request->input('field')];
 
+        $form = collect($request->input('form'));
+        $searchTerm = $request->input('q');
+        $page = $request->input('page');
+        $pagination = $field['pagination'] ?? 10;
+
         if (isset($field['search_logic']) && is_callable($field['search_logic'])) {
-            return $field['search_logic']($field['model']::query(), $searchTerm)->paginate(10);
+            return $field['search_logic']($field['model']::query(), $searchTerm, $form)->paginate($pagination);
         }
 
-        return $field['model']::where($field['attribute'], 'LIKE', '%' . $searchTerm . '%')->paginate(10);
+        return $field['model']::where($field['attribute'], 'LIKE', '%' . $searchTerm . '%')->paginate($pagination);
     }
 
     /**

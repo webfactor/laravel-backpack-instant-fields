@@ -21,6 +21,14 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 1.5.0 - 2019-02-05
+
+### Added
+- support for dependencies
+- use all form values in custom search logic
+- adjust pagination (default: 10)
+
+
 ## 1.4.0 - 2018-11-11
 
 ### Added
