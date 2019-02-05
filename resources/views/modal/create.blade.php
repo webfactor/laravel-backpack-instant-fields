@@ -39,6 +39,25 @@
                     });
 
                     $("#{{ $entity }}_modal").modal('toggle');
+
+                    // provide auto-fill
+
+                    searchfield = $("#select2_ajax_{{ $field_name }}")
+                    searchfield.select2('open');
+
+                    // Get the search box within the dropdown or the selection
+                    // Dropdown = single, Selection = multiple
+                    var search = searchfield.data('select2').dropdown.$search || searchfield.data('select2').selection.$search;
+                    // This is undocumented and may change in the future
+
+                    search.val('Abts');
+                    search.trigger('input');
+                    setTimeout(function () {
+                        $('.select2-results__option').trigger("mouseup");
+                    }, 500);
+
+                    console.log(data)
+
                 },
                 error: function (data) {
                     new PNotify({

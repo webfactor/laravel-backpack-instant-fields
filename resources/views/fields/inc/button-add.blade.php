@@ -1,4 +1,4 @@
-<button href="{{ $field['on_the_fly']['create_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/create' }}"
+<button href="{{ $field['on_the_fly']['create_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/create?field_name='.$field['name'].'&attribute='.$field['attribute'] }}"
         type="button"
         class="btn btn-primary"
         data-toggle="modal"

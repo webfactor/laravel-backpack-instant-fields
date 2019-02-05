@@ -64,6 +64,8 @@ trait HandlesAjaxRequest
             ->with('saveAction', $this->getSaveAction())
             ->with('fields', $this->crud->getCreateFields())
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
+            ->with('field_name', request()->input('field_name'))
+            ->with('attribute', request()->input('attribute'))
             ->render();
     }
 
