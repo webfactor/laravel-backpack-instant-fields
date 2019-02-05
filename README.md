@@ -123,6 +123,33 @@ class EntityCrudController extends CrudController
 }
 ```
 
+## List view
+
+With this package your are also able to add an create button for the foreign CRUD entity in your list view of Backpack! Just add the following line in your `EntityCrudController`:
+
+```php
+<?php
+
+    $this->addInstantCreateButtonToList(
+        $entity, // foreign entity 
+        $content, // content of the button
+        $entity_id, // the name of the ID of the current entity will be forwarded by this  
+        $class, // optional, default: 'btn btn-xs btn-default', the css class of the button
+        $position, // optional, default: beginning, the position of the button in the line 
+        $button_view // optional, you can override the used button blade by your own
+    );
+        
+        // Example:
+    
+    $this->addInstantCreateButtonToList(
+        'order', 
+        '<i class="fa fa-cart-plus"></i>', 
+        'task_id', 
+        'btn btn-sm btn-info', 
+        'end'
+    );
+```
+
 ## Customization
 
 ### Modal view
