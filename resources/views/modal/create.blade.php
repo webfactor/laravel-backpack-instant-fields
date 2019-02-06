@@ -28,7 +28,7 @@
         $("#create_{{ $entity }}").submit(function (e) {
 
             $.ajax({
-                type: "POST",
+                type: "PUT",
                 url: "/{{ ltrim($crud->route . '/ajax', '/') }}",
                 data: $("#create_{{ $entity }}").serialize(), // serializes the form's elements.
                 success: function (data) {

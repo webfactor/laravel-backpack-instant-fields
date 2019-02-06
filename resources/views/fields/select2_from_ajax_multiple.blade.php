@@ -79,7 +79,7 @@
                         minimumInputLength: "{{ $field['minimum_input_length'] }}",
                         ajax: {
                             url: "/{{ ltrim($field['data_source'] ?? $crud->getRoute().'/ajax', '/') }}",
-                            type: '{{ $field['method'] ?? 'GET' }}',
+                            type: '{{ $field['method'] ?? 'POST' }}',
                             dataType: 'json',
                             quietMillis: 250,
                             data: function (params) {

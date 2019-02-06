@@ -10,17 +10,21 @@ trait HandlesAjaxRequest
     /**
      * Handles the incoming ajax requests by default
      * @param Request $request
-     * @param null $create
+     * @param null $mode
      * @return mixed
      *
      */
-    public function handleAjaxRequest(Request $request, $create = null)
+    public function handleAjaxRequest(Request $request, $mode = null)
     {
-        if ($create) {
+        if ($mode == 'create') {
             return $this->ajaxCreate();
         }
 
-        if (strtolower($request->method()) == 'post') {
+        /*if ($mode == 'edit') {
+            return $this->ajaxEdit();
+        }*/
+
+        if (strtolower($request->method()) == 'put') {
             return $this->ajaxStore($request);
         }
 
@@ -50,7 +54,7 @@ trait HandlesAjaxRequest
     }
 
     /**
-     * Returns the HTML that is used for displaying the on-the-fly modal of the entity
+     * Returns the HTML that is used for displaying the on-the-fly modal of the adding an entity
      * @return string
      */
     public function ajaxCreate()
@@ -67,6 +71,17 @@ trait HandlesAjaxRequest
             ->with('field_name', request()->input('field_name'))
             ->with('attribute', request()->input('attribute'))
             ->render();
+    }
+
+    /**
+     * Returns the HTML that is used for displaying the on-the-fly modal of the editing an entity
+     * @return string
+     */
+    public function ajaxEdit()
+    {
+        $this->crud->hasAccessOrFail('edit');
+
+        //
     }
 
     /**
