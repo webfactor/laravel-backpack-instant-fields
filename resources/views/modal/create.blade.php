@@ -49,12 +49,13 @@
                     // Dropdown = single, Selection = multiple
                     var search = searchfield.data('select2').dropdown.$search || searchfield.data('select2').selection.$search;
                     // This is undocumented and may change in the future
+                    var userInput = $("#create_{{ $entity }} [name='{{ $attribute }}']").serializeArray();
 
-                    search.val('Abts');
+                    search.val(userInput[0]['value']);
                     search.trigger('input');
                     setTimeout(function () {
                         $('.select2-results__option').trigger("mouseup");
-                    }, 500);
+                    }, 200);
 
                     console.log(data)
 

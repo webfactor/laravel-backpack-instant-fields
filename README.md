@@ -94,10 +94,13 @@ Example:
     'minimum_input_length' => 0,
     'on_the_fly'           => [
         'entity' => 'entity',
+        'attribute' => 'name' // optional, default: name
     ],
     'dependencies'         => ['field1', 'field2'...], // optional, resets this field when changing the given ones
 ],
 ```
+
+Instant Fields will try to auto-fill the select2 input after creating a new entry. It will assume that an input field exists with the name `name` and will use its value for the triggered ajax search. If you want to use another field for this, just add `attribute` to the `on_the_fly`-array containing the field name you want to use.
 
 ## Multiple instant fields
 
