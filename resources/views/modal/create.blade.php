@@ -42,7 +42,12 @@
 
                     // provide auto-fill
 
-                    searchfield = $("#select2_ajax_{{ $field_name }}")
+                    if ($("#select2_ajax_{{ $field_name }}").length) {
+                        searchfield = $("#select2_ajax_{{ $field_name }}")
+                    } else {
+                        searchfield = $("#select2_ajax_multiple_{{ $field_name }}")
+                    }
+
                     searchfield.select2('open');
 
                     // Get the search box within the dropdown or the selection
