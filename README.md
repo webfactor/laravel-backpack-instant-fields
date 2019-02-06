@@ -51,7 +51,7 @@ in your routes file you have to add one additional route in your `CRUD::resource
  <?php
  
 CRUD::resource('entity', 'EntityCrudController')->with(function () {
-    Route::match(['get', 'post'],'entity/ajax/{create?}', 'EntityCrudController@handleAjaxRequest');
+    Route::any('entity/ajax/{mode?}', 'EntityCrudController@handleAjaxRequest');
 });
  ```
 
