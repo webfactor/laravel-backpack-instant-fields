@@ -9,36 +9,39 @@
     <label>{!! $field['label'] !!}</label>
     <?php $entity_model = $crud->model; ?>
 
-    <select
-        name="{{ $field['name'] }}"
-        style="width: 100%"
-        id="select2_ajax_{{ $field['name'] }}"
-        @include('crud::inc.field_attributes', ['default_class' =>  'form-control'])
-    >
+    <div class="input-group">
+        <select
+            class="form-control"
+            name="{{ $field['name'] }}"
+            style="width: 100%"
+            id="select2_ajax_{{ $field['name'] }}"
+            @include('crud::inc.field_attributes', ['default_class' =>  'form-control'])
+        >
 
-        @if ($old_value)
-            @php
-                $item = $connected_entity->find($old_value);
-            @endphp
-            @if ($item)
+            @if ($old_value)
+                @php
+                    $item = $connected_entity->find($old_value);
+                @endphp
+                @if ($item)
 
-                {{-- allow clear --}}
-                @if ($entity_model::isColumnNullable($field['name']))
-                    <option value="" selected>
-                        {{ $field['placeholder'] }}
+                    {{-- allow clear --}}
+                    @if ($entity_model::isColumnNullable($field['name']))
+                        <option value="" selected>
+                            {{ $field['placeholder'] }}
+                        </option>
+                    @endif
+
+                    <option value="{{ $item->getKey() }}" selected>
+                        {{ $item->{isset($field['option_label']) ? $field['option_label'] : $field['attribute']} }}
                     </option>
                 @endif
-
-                <option value="{{ $item->getKey() }}" selected>
-                    {{ $item->{isset($field['option_label']) ? $field['option_label'] : $field['attribute']} }}
-                </option>
             @endif
-        @endif
-    </select>
+        </select>
 
-    @if (isset($field['on_the_fly']))
-        @include('webfactor::fields.inc.button-add')
-    @endif
+        @if (isset($field['on_the_fly']))
+            @include('webfactor::fields.inc.button-add')
+        @endif
+    </div>
 
     {{-- HINT --}}
     @if (isset($field['hint']))
