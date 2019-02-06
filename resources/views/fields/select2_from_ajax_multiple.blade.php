@@ -7,8 +7,9 @@
 
 <div @include('crud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
-    @include('crud::inc.field_translatable_icon')
-    <select
+
+    <div class="input-group">
+        <select
         name="{{ $field['name'] }}[]"
         style="width: 100%"
         id="select2_ajax_multiple_{{ $field['name'] }}"
@@ -27,11 +28,12 @@
                 </option>
             @endforeach
         @endif
-    </select>
+        </select>
 
-    @if (isset($field['on_the_fly']))
-        @include('webfactor::fields.inc.button-add')
-    @endif
+        @if (isset($field['on_the_fly']))
+            @include('webfactor::fields.inc.button-add')
+        @endif
+    </div>
 
     {{-- HINT --}}
     @if (isset($field['hint']))
