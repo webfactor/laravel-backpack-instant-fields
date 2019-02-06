@@ -125,7 +125,7 @@ class EntityCrudController extends CrudController
 
 ## List view
 
-With this package your are also able to add an create button for the foreign CRUD entity in your list view of Backpack! Just add the following line in your `EntityCrudController`:
+With this package your are also able to add a create button for the foreign CRUD entity in your list view of Backpack! Just add the following line in your `EntityCrudController`:
 
 ```php
 <?php
