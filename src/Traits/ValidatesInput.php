@@ -25,4 +25,24 @@ trait ValidatesInput
     {
         $this->storeAjaxRequest = $storeAjaxRequest;
     }
+
+    /**
+     * Returns instance of FormRequest for request validation if $ajaxUpdateRequest is set
+     *
+     * @return FormRequest|null
+     */
+    public function getAjaxUpdateRequest()
+    {
+        return isset($this->updateAjaxRequest) ? new $this->updateAjaxRequest : null;
+    }
+
+    /**
+     * Sets $ajaxUpdateRequest property to use for request validation
+     *
+     * @return void
+     */
+    public function setAjaxUpdateRequest(string $updateAjaxRequest)
+    {
+        $this->updateAjaxRequest = $updateAjaxRequest;
+    }
 }

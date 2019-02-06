@@ -20,12 +20,16 @@ trait HandlesAjaxRequest
             return $this->ajaxCreate();
         }
 
-        /*if ($mode == 'edit') {
+        if ($mode == 'edit') {
             return $this->ajaxEdit();
-        }*/
+        }
 
         if (strtolower($request->method()) == 'put') {
             return $this->ajaxStore($request);
+        }
+
+        if (strtolower($request->method()) == 'patch') {
+            return $this->ajaxUpdate($request);
         }
 
         return $this->ajaxIndex($request);
@@ -65,7 +69,6 @@ trait HandlesAjaxRequest
             ->with('action', 'create')
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
-            ->with('saveAction', $this->getSaveAction())
             ->with('fields', $this->crud->getCreateFields())
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
             ->with('field_name', request()->input('field_name'))
@@ -79,9 +82,19 @@ trait HandlesAjaxRequest
      */
     public function ajaxEdit()
     {
-        $this->crud->hasAccessOrFail('edit');
+        $this->crud->hasAccessOrFail('update');
 
-        //
+        return \View::make('webfactor::modal.edit')
+            ->with('action', 'edit')
+            ->with('id', request()->input('id'))
+            ->with('entity', $this->getAjaxEntity())
+            ->with('crud', $this->crud)
+            ->with('saveAction', $this->getSaveAction())
+            ->with('fields', $this->crud->getUpdateFields(request()->input('id')))
+            ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
+            ->with('field_name', request()->input('field_name'))
+            ->with('attribute', request()->input('attribute'))
+            ->render();
     }
 
     /**
@@ -105,6 +118,32 @@ trait HandlesAjaxRequest
 
         if (parent::storeCrud($request)) {
             return $this->ajaxRespondCreated();
+        }
+
+        return $this->ajaxRespondError();
+    }
+
+    /**
+     * Checks permission and tries to update on-the-fly entity. If you want to enable request validation,
+     * please set your StoreRequest class by using setAjaxStoreRequest() in your EntityCrudController
+     *
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ajaxUpdate(Request $request)
+    {
+        if (!$this->crud->hasAccess('update')) {
+            return $this->ajaxRespondNoPermission();
+        }
+
+        if ($updateRequest = $this->getAjaxUpdateRequest()) {
+            if ($errors = $this->ajaxValidationFails($request, $updateRequest->rules())) {
+                return response()->json($this->ajaxFormatMessage($errors), 422);
+            }
+        }
+
+        if (parent::updateCrud($request)) {
+            return $this->ajaxRespondUpdated();
         }
 
         return $this->ajaxRespondError();
@@ -144,6 +183,16 @@ trait HandlesAjaxRequest
     private function ajaxRespondCreated()
     {
         return response()->json([], 201);
+    }
+
+    /**
+     * Responses 204 No Content
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function ajaxRespondUpdated()
+    {
+        return response()->json([], 204);
     }
 
     /**

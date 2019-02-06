@@ -41,6 +41,10 @@
         @if (isset($field['on_the_fly']))
             @include('webfactor::fields.inc.button-add')
         @endif
+
+        @if (isset($field['on_the_fly']))
+            @include('webfactor::fields.inc.button-edit')
+        @endif
     </div>
 
     {{-- HINT --}}
