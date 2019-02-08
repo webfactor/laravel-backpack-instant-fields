@@ -6,7 +6,7 @@
         style="border-radius: 0px"
         data-toggle="modal"
         data-target="#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal"
-        data-load-url="{{ $field['on_the_fly']['create_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/create?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
+        data-load-url="{{ $field['on_the_fly']['create_modal'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/create?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
     <i class="fa fa-plus"></i>
     </button>
 </span>

@@ -7,7 +7,7 @@
         data-toggle="modal"
         data-id="{{ $field['value'] ?? '' }}"
         data-target="#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal"
-        data-load-url="{{ $field['on_the_fly']['edit_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/edit?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
+        data-load-url="{{ $field['on_the_fly']['edit_modal'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/edit?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
     <i class="fa fa-pencil"></i>
     </button>
 </span>
