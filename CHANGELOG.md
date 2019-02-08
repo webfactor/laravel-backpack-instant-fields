@@ -21,7 +21,7 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
-## 2.0.0 - 2019-02-10
+## 2.0.0 - 2019-02-08
 
 ### Added
 - new layout: inline!
