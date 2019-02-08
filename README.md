@@ -8,7 +8,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create a related CRUD entity on-the-fly while adding/editing another.
+This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create and edit a related CRUD entity on-the-fly while adding/editing another.
 
 ![Screenshot](https://webfactor.de/files/modal_1.png)
 
@@ -55,11 +55,12 @@ CRUD::resource('entity', 'EntityCrudController')->with(function () {
 });
  ```
 
-The trait/route will handle three situations for you:
+The trait/route will handle the following requests for you:
 
 - search on triggered entity
-- retrieve the HTML for the modal
+- retrieve the HTML for the create and edit modal
 - store entity from modal
+- update entity from modal
 
 ### Available Fields
 
@@ -68,15 +69,35 @@ There are two field types available in this package which allow you an instant c
 - [select2_from_ajax](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax)
 - [select2_from_ajax_multiple](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax_multiple)
 
-To use instant creation capability of these field types you have to add the `on-the-fly` key and set a name for the entity.
+For `select2_from_ajax` also "edit" is available.
 
-```
-'on_the_fly' => [
-    'entity' => 'entity' // e.g. user, contact, company, job etc...
-]
-```
+### Field Definition
 
-If you use Laravel Backpack Crud >=3.4.11 you don't have to publish the provided fields, you can use them directly from the package by using the `view_namespace` key.
+Please set the `$ajaxEntity` property by using the setter in the `setup()`-method of the (foreign) EntityCrudController that is **triggered** by an "instant field":
+       
+```php
+<?php
+
+use Webfactor\Laravel\Backpack\InstantFields\InstantFields;
+
+class EntityCrudController extends CrudController
+{
+   use InstantFields;
+
+   public function setup()
+   {
+       // other Backpack options
+       
+       $this->setAjaxEntity('entity');
+       
+       // fields/columns definitions
+   }
+}
+```
+       
+In the field definition of the `EntityCrudController` where your instant field is setup you will have to set the above name in the `on_the_fly`-Array.    
+
+> Note: If you use Laravel Backpack Crud >=3.4.11 you don't have to publish the provided fields, you can use them directly from the package by using the `view_namespace` key.
 
 Example:
 
@@ -93,38 +114,21 @@ Example:
     'pagination'           => 20, // optional, default: 10
     'minimum_input_length' => 0,
     'on_the_fly'           => [
-        'entity' => 'entity',
-        'attribute' => 'name' // optional, default: name
+        'entity'        => 'entity', // e. g. user, contact, company etc...
+        
+        // optional:
+        
+        'create'        => false
+        'edit'          => false
+        'create_modal'  => 'path to custom create modal'
+        'edit_modal'    => 'path to custom edit modal'
+        'attribute'     => '...' // see auto-fill below in readme
     ],
     'dependencies'         => ['field1', 'field2'...], // optional, resets this field when changing the given ones
 ],
 ```
 
 Instant Fields will try to auto-fill the select2 input after creating a new entry. It will assume that an input field exists with the name `name` and will use its value for the triggered ajax search. If you want to use another field for this, just add `attribute` to the `on_the_fly`-array containing the field name you want to use.
-
-## Multiple instant fields
-
-If you want to use more than one instant field in a CrudController you have to set the `$ajaxEntity` property by using the setter in the `setup()`-method of the EntityCrudController that is triggered by an "instant field". This has to be the same name as in the field definition:
-
-```php
-<?php
-
-use Webfactor\Laravel\Backpack\InstantFields\InstantFields;
-
-class EntityCrudController extends CrudController
-{
-    use InstantFields;
-
-    public function setup()
-    {
-        // other Backpack options
-        
-        $this->setAjaxEntity('entity');
-        
-        // fields/columns definitions
-    }
-}
-```
 
 ## List view
 
@@ -192,7 +196,7 @@ If needed you are free to use the `data_source` attribute from the original fiel
 
 ### Request validation
 
-You can also use Request Validation! Just set the `$ajaxStoreRequest` property by using the provided setter method:
+You can also use Request Validation! Just set the `$ajaxStoreRequest` and/or `$ajaxUpdateRequest` property by using the provided setter method:
 
 ```php
 <?php
@@ -209,10 +213,21 @@ class EntityCrudController extends CrudController
         
         $this->setAjaxEntity('entity');
         $this->setAjaxStoreRequest(\RequestNamespace\StoreRequest::class);
+        $this->setAjaxUpdateRequest(\RequestNamespace\UpdateRequest::class);
         
         // fields/columns definitions
     }
 }
+```
+### Auto-fill after store/update
+
+Instant Fields will try to auto-fill the select2 input after creating a new entry. It will assume that an input field exists with the name `name` and will use its value for the triggered ajax search. If you want to use another field for this, just add `attribute` to the `on_the_fly`-array containing the field name you want to use:
+
+```
+'on_the_fly' => [
+    'entity' => 'entity',
+    'attribute' => 'company'
+]
 ```
 
 ### Fields
