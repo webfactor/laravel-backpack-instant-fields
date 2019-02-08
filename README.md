@@ -192,7 +192,7 @@ Furthermore you can then use `attibute` to display enriched values in the dropdo
 
 ### Search data source
 
-If needed you are free to use the `data_source` attribute from the original field blades which come with Laravel Backpack. This is the URL that is triggered by the select2 field for searching.
+If needed you are free to use the `data_source` and `method` attributes from the original field blades which come with Laravel Backpack. This is the URL that is triggered by the select2 field for searching.
 
 ### Request validation
 
