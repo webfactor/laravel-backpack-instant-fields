@@ -1,12 +1,13 @@
 <span class="input-group-btn">
     <button
-        href="{{ $field['on_the_fly']['edit_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/edit?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}&id=1"
+        href="#"
         type="button"
         class="btn btn-warning"
         style="border-radius: 0px"
         data-toggle="modal"
+        data-id="{{ $field['value'] ?? '' }}"
         data-target="#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal"
-        onclick="">
+        data-load-url="{{ $field['on_the_fly']['edit_view'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/edit?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
     <i class="fa fa-pencil"></i>
     </button>
 </span>

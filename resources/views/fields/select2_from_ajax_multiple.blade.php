@@ -69,6 +69,12 @@
 @push('crud_fields_scripts')
     <script>
         jQuery(document).ready(function ($) {
+            // load create modal content
+            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
+                var loadurl = $(e.relatedTarget).data('load-url');
+                $(this).find('.modal-content').load(loadurl);
+            });
+
             // trigger select2 for each untriggered select2 box
             $("#select2_ajax_multiple_{{ $field['name'] }}").each(function (i, obj) {
                 var form = $(obj).closest('form');

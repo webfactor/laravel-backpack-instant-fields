@@ -39,7 +39,7 @@
                         text: "{{ trans('backpack::crud.insert_success') }}"
                     });
 
-                    $("#{{ $entity }}_create_modal").modal('toggle');
+                    $("#{{ $entity }}_create_modal").modal('hide');
 
                     // provide auto-fill
 
@@ -62,9 +62,6 @@
                     setTimeout(function () {
                         $('.select2-results__option').trigger("mouseup");
                     }, 200);
-
-                    console.log(data)
-
                 },
                 error: function (data) {
                     new PNotify({

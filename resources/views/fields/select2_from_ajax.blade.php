@@ -89,6 +89,26 @@
 @push('crud_fields_scripts')
     <script>
         jQuery(document).ready(function ($) {
+
+            // load create modal content
+            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
+                var loadurl = $(e.relatedTarget).data('load-url');
+                $(this).find('.modal-content').load(loadurl);
+            });
+
+            // load edit modal content
+            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal").on('show.bs.modal', function (e) {
+                var loadurl = $(e.relatedTarget).data('load-url');
+                var id = $(e.relatedTarget).data('id');
+                $(this).find('.modal-content').load(loadurl + '&id=' + id);
+            });
+
+            // update id for edit modal url
+            $("#select2_ajax_{{ $field['name'] }}").change(function (e) {
+                $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal']")
+                    .data("id", $("#select2_ajax_{{ $field['name'] }}").select2('data')[0].id);
+            })
+
             // trigger select2 for each untriggered select2 box
             $("#select2_ajax_{{ $field['name'] }}").each(function (i, obj) {
                 var form = $(obj).closest('form');
