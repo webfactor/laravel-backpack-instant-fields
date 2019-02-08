@@ -1,7 +1,7 @@
-@extends('webfactor::modal.create_layout')
+@extends('webfactor::modal.edit_layout')
 
 @section('header')
-    <h3 class="box-title">{{ trans('backpack::crud.add_a_new') }} {{ $crud->entity_name }}</h3>
+    <h3 class="box-title">{{ trans('backpack::crud.edit') }} {{ $crud->entity_name }}</h3>
 @endsection
 
 @section('content')
@@ -11,35 +11,34 @@
 
         <!-- load the view from the application if it exists, otherwise load the one in the package -->
             @if(view()->exists('vendor.backpack.crud.form_content'))
-                @include('vendor.backpack.crud.form_content', ['fields' => $fields])
+                @include('vendor.backpack.crud.form_content', ['fields' => $fields, 'action' => 'edit'])
             @else
-                @include('crud::form_content', ['fields' => $fields])
+                @include('crud::form_content', ['fields' => $fields, 'action' => 'edit'])
             @endif
         </div>
     </div>
 @endsection
 
 @section('footer')
-    @include('webfactor::modal.inc.create_form_save_buttons')
+    @include('webfactor::modal.inc.edit_form_save_buttons')
 @endsection
 
 @push('crud_fields_scripts')
     <script>
-        $("#create_{{ $entity }}").submit(function (e) {
-            e.preventDefault(); // avoid to execute the actual submit of the form.
+        $("#edit_{{ $entity }}").submit(function (e) {
 
             $.ajax({
-                type: "PUT",
+                type: "PATCH",
                 url: "/{{ ltrim($crud->route . '/ajax', '/') }}",
-                data: $("#create_{{ $entity }}").serialize(), // serializes the form's elements.
+                data: $("#edit_{{ $entity }}").serialize(), // serializes the form's elements.
                 success: function (data) {
                     new PNotify({
                         type: "success",
                         title: "{{ trans('backpack::base.success') }}",
-                        text: "{{ trans('backpack::crud.insert_success') }}"
+                        text: "{{ trans('backpack::crud.update_success') }}"
                     });
 
-                    $("#{{ $entity }}_create_modal").modal('hide');
+                    $("#{{ $entity }}_edit_modal").modal('hide');
 
                     // provide auto-fill
 
@@ -49,13 +48,14 @@
                         searchfield = $("#select2_ajax_multiple_{{ $field_name }}")
                     }
 
+                    searchfield.val(null).trigger('change');
                     searchfield.select2('open');
 
                     // Get the search box within the dropdown or the selection
                     // Dropdown = single, Selection = multiple
                     var search = searchfield.data('select2').dropdown.$search || searchfield.data('select2').selection.$search;
                     // This is undocumented and may change in the future
-                    var userInput = $("#create_{{ $entity }} [name='{{ $attribute }}']").serializeArray();
+                    var userInput = $("#edit_{{ $entity }} [name='{{ $attribute }}']").serializeArray();
 
                     search.val(userInput[0]['value']);
                     search.trigger('input');
@@ -71,6 +71,8 @@
                     });
                 }
             });
+
+            e.preventDefault(); // avoid to execute the actual submit of the form.
         });
     </script>
 

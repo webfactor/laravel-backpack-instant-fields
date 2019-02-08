@@ -10,18 +10,26 @@ trait HandlesAjaxRequest
     /**
      * Handles the incoming ajax requests by default
      * @param Request $request
-     * @param null $create
+     * @param null $mode
      * @return mixed
      *
      */
-    public function handleAjaxRequest(Request $request, $create = null)
+    public function handleAjaxRequest(Request $request, $mode = null)
     {
-        if ($create) {
+        if ($mode == 'create') {
             return $this->ajaxCreate();
         }
 
-        if (strtolower($request->method()) == 'post') {
+        if ($mode == 'edit') {
+            return $this->ajaxEdit();
+        }
+
+        if (strtolower($request->method()) == 'put') {
             return $this->ajaxStore($request);
+        }
+
+        if (strtolower($request->method()) == 'patch') {
+            return $this->ajaxUpdate($request);
         }
 
         return $this->ajaxIndex($request);
@@ -35,20 +43,22 @@ trait HandlesAjaxRequest
      */
     public function ajaxIndex(Request $request)
     {
-        $searchTerm = $request->input('q');
-        $page = $request->input('page');
-
         $field = $this->crud->getFields(null)[$request->input('field')];
 
+        $form = collect($request->input('form'));
+        $searchTerm = $request->input('q');
+        $page = $request->input('page');
+        $pagination = $field['pagination'] ?? 10;
+
         if (isset($field['search_logic']) && is_callable($field['search_logic'])) {
-            return $field['search_logic']($field['model']::query(), $searchTerm)->paginate(10);
+            return $field['search_logic']($field['model']::query(), $searchTerm, $form)->paginate($pagination);
         }
 
-        return $field['model']::where($field['attribute'], 'LIKE', '%' . $searchTerm . '%')->paginate(10);
+        return $field['model']::where($field['attribute'], 'LIKE', '%' . $searchTerm . '%')->paginate($pagination);
     }
 
     /**
-     * Returns the HTML that is used for displaying the on-the-fly modal of the entity
+     * Returns the HTML that is used for displaying the on-the-fly modal of the adding an entity
      * @return string
      */
     public function ajaxCreate()
@@ -59,9 +69,31 @@ trait HandlesAjaxRequest
             ->with('action', 'create')
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
-            ->with('saveAction', $this->getSaveAction())
             ->with('fields', $this->crud->getCreateFields())
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
+            ->with('field_name', request()->input('field_name'))
+            ->with('attribute', request()->input('attribute'))
+            ->render();
+    }
+
+    /**
+     * Returns the HTML that is used for displaying the on-the-fly modal of the editing an entity
+     * @return string
+     */
+    public function ajaxEdit()
+    {
+        $this->crud->hasAccessOrFail('update');
+
+        return \View::make('webfactor::modal.edit')
+            ->with('action', 'edit')
+            ->with('id', request()->input('id'))
+            ->with('entity', $this->getAjaxEntity())
+            ->with('crud', $this->crud)
+            ->with('saveAction', $this->getSaveAction())
+            ->with('fields', $this->crud->getUpdateFields(request()->input('id')))
+            ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
+            ->with('field_name', request()->input('field_name'))
+            ->with('attribute', request()->input('attribute'))
             ->render();
     }
 
@@ -86,6 +118,32 @@ trait HandlesAjaxRequest
 
         if (parent::storeCrud($request)) {
             return $this->ajaxRespondCreated();
+        }
+
+        return $this->ajaxRespondError();
+    }
+
+    /**
+     * Checks permission and tries to update on-the-fly entity. If you want to enable request validation,
+     * please set your StoreRequest class by using setAjaxStoreRequest() in your EntityCrudController
+     *
+     * @param StoreRequest $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ajaxUpdate(Request $request)
+    {
+        if (!$this->crud->hasAccess('update')) {
+            return $this->ajaxRespondNoPermission();
+        }
+
+        if ($updateRequest = $this->getAjaxUpdateRequest()) {
+            if ($errors = $this->ajaxValidationFails($request, $updateRequest->rules())) {
+                return response()->json($this->ajaxFormatMessage($errors), 422);
+            }
+        }
+
+        if (parent::updateCrud($request)) {
+            return $this->ajaxRespondUpdated();
         }
 
         return $this->ajaxRespondError();
@@ -125,6 +183,16 @@ trait HandlesAjaxRequest
     private function ajaxRespondCreated()
     {
         return response()->json([], 201);
+    }
+
+    /**
+     * Responses 204 No Content
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function ajaxRespondUpdated()
+    {
+        return response()->json([], 204);
     }
 
     /**

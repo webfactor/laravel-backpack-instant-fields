@@ -4,10 +4,10 @@
 
     <button type="submit" class="btn btn-success">
         <span class="fa fa-save" role="presentation" aria-hidden="true"></span> &nbsp;
-        <span data-value="{{ $saveAction['active']['value'] }}">{{ $saveAction['active']['label'] }}</span>
+        <span data-value="save_and_back">{{ trans('backpack::crud.save') }}</span>
     </button>
 
-    <button class="btn btn-default" type="button" data-toggle="modal" data-target="#{{ $entity }}_modal">
+    <button class="btn btn-default" type="button" data-toggle="modal" data-target="#{{ $entity }}_edit_modal">
         <span class="fa fa-ban"></span> {{ trans('backpack::crud.cancel') }}
     </button>
 </div>

@@ -2,13 +2,14 @@
 @php
     $connected_entity = new $field['model'];
     $connected_entity_key_name = $connected_entity->getKeyName();
-    $old_value = old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : false ));
+    $old_value = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? false;
 @endphp
 
 <div @include('crud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
-    @include('crud::inc.field_translatable_icon')
-    <select
+
+    <div class="input-group">
+        <select
         name="{{ $field['name'] }}[]"
         style="width: 100%"
         id="select2_ajax_multiple_{{ $field['name'] }}"
@@ -27,11 +28,12 @@
                 </option>
             @endforeach
         @endif
-    </select>
+        </select>
 
-    @if (isset($field['on_the_fly']))
-        @include('webfactor::fields.inc.button-add')
-    @endif
+        @if (isset($field['on_the_fly']))
+            @include('webfactor::fields.inc.button-add')
+        @endif
+    </div>
 
     {{-- HINT --}}
     @if (isset($field['hint']))
@@ -43,7 +45,7 @@
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
 {{-- If a field type is shown multiple times on a form, the CSS and JS will only be loaded once --}}
-@if ($crud->checkIfFieldIsFirstOfItsType($field, $fields))
+@if ($crud->checkIfFieldIsFirstOfItsType($field))
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
@@ -67,8 +69,16 @@
 @push('crud_fields_scripts')
     <script>
         jQuery(document).ready(function ($) {
+            // load create modal content
+            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
+                var loadurl = $(e.relatedTarget).data('load-url');
+                $(this).find('.modal-content').load(loadurl);
+            });
+
             // trigger select2 for each untriggered select2 box
             $("#select2_ajax_multiple_{{ $field['name'] }}").each(function (i, obj) {
+                var form = $(obj).closest('form');
+
                 if (!$(obj).hasClass("select2-hidden-accessible")) {
                     $(obj).select2({
                         theme: 'bootstrap',
@@ -77,13 +87,15 @@
                         minimumInputLength: "{{ $field['minimum_input_length'] }}",
                         ajax: {
                             url: "/{{ ltrim($field['data_source'] ?? $crud->getRoute().'/ajax', '/') }}",
+                            type: '{{ $field['method'] ?? 'POST' }}',
                             dataType: 'json',
                             quietMillis: 250,
                             data: function (params) {
                                 return {
                                     q: params.term, // search term
                                     field: "{{ $field['name'] }}",
-                                    page: params.page
+                                    page: params.page,
+                                    form: form.serializeArray() // all other form inputs
                                 };
                             },
                             processResults: function (data, params) {
@@ -104,6 +116,14 @@
                     });
                 }
             });
+
+            @if (isset($field['dependencies']))
+                @foreach (array_wrap($field['dependencies']) as $dependency)
+                    $('input[name={{ $dependency }}], select[name={{ $dependency }}], checkbox[name={{ $dependency }}], radio[name={{ $dependency }}], textarea[name={{ $dependency }}]').change(function () {
+                        $("#select2_ajax_multiple_{{ $field['name'] }}").val(null).trigger("change");
+                    });
+                @endforeach
+            @endif
         });
     </script>
 @endpush

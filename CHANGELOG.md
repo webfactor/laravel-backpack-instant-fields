@@ -21,6 +21,19 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 2.0.0 - 2019-02-08
+
+### Added
+- new layout: inline!
+- edit button!
+- support for dependencies
+- use all form values in custom search logic
+- adjust pagination (default: 10)
+- autofill select on creating an entity
+
+If your are upgrading from version 1.x please just update your routes to use "any" method (see readme)
+
+
 ## 1.4.0 - 2018-11-11
 
 ### Added
