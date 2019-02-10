@@ -2,7 +2,7 @@
     <button
         href="#"
         type="button"
-        class="btn btn-warning"
+        class="btn btn-warning {{ $field['value'] ?: 'disabled'}}"
         style="border-radius: 0px"
         data-toggle="modal"
         data-id="{{ $field['value'] ?? '' }}"

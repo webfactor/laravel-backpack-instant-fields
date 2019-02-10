@@ -45,6 +45,10 @@
         @if ($field['on_the_fly']['edit'] ?? true)
             @include('webfactor::fields.inc.button-edit')
         @endif
+
+        @if ($field['on_the_fly']['delete'] ?? true)
+            @include('webfactor::fields.inc.button-delete')
+        @endif
     </div>
 
     {{-- HINT --}}
@@ -93,20 +97,42 @@
             // load create modal content
             $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
                 var loadurl = $(e.relatedTarget).data('load-url');
+
                 $(this).find('.modal-content').load(loadurl);
             });
 
-            // load edit modal content
-            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal").on('show.bs.modal', function (e) {
-                var loadurl = $(e.relatedTarget).data('load-url');
-                var id = $(e.relatedTarget).data('id');
-                $(this).find('.modal-content').load(loadurl + '&id=' + id);
+            // load edit/delete modal content
+            $(
+                "#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal," +
+                "#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal"
+            ).on('show.bs.modal', function (e) {
+                var button = e.relatedTarget;
+
+                if ($(button).hasClass('disabled')) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                } else {
+                    var loadurl = $(button).data('load-url');
+                    var id = $(button).data('id');
+
+                    $(this).find('.modal-content').load(loadurl + '&id=' + id);
+                }
             });
 
-            // update id for edit modal url
+            // update id for edit/delete modal url
             $("#select2_ajax_{{ $field['name'] }}").change(function (e) {
-                $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal']")
-                    .data("id", $("#select2_ajax_{{ $field['name'] }}").select2('data')[0].id);
+                var entry = $("#select2_ajax_{{ $field['name'] }}").select2('data')[0];
+                var editButton = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal']");
+                var deleteButton = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal']");
+
+                if (entry) {
+                    editButton.data("id", entry.id).removeClass('disabled');
+                    deleteButton.data("id", entry.id).removeClass('disabled');
+                } else {
+                    editButton.data("id", "").addClass('disabled');
+                    deleteButton.data("id", "").addClass('disabled');
+                }
+
             })
 
             // trigger select2 for each untriggered select2 box
@@ -170,11 +196,11 @@
             });
 
             @if (isset($field['dependencies']))
-                @foreach (array_wrap($field['dependencies']) as $dependency)
-                    $('input[name={{ $dependency }}], select[name={{ $dependency }}], checkbox[name={{ $dependency }}], radio[name={{ $dependency }}], textarea[name={{ $dependency }}]').change(function () {
-                        $("#select2_ajax_{{ $field['name'] }}").val(null).trigger("change");
-                    });
-                @endforeach
+            @foreach (array_wrap($field['dependencies']) as $dependency)
+            $('input[name={{ $dependency }}], select[name={{ $dependency }}], checkbox[name={{ $dependency }}], radio[name={{ $dependency }}], textarea[name={{ $dependency }}]').change(function () {
+                $("#select2_ajax_{{ $field['name'] }}").val(null).trigger("change");
+            });
+            @endforeach
             @endif
         });
     </script>

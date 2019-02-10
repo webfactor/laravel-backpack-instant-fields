@@ -8,7 +8,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create and edit a related CRUD entity on-the-fly while adding/editing another.
+This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create and edit a related CRUD entity on-the-fly while adding/editing/deleting another.
 
 ![Screenshot](https://webfactor.de/files/modal_1.png)
 
@@ -58,9 +58,8 @@ CRUD::resource('entity', 'EntityCrudController')->with(function () {
 The trait/route will handle the following requests for you:
 
 - search on triggered entity
-- retrieve the HTML for the create and edit modal
-- store entity from modal
-- update entity from modal
+- retrieve the HTML for the create/edit/delete modal
+- store/update/destroy foreign entity
 
 ### Available Fields
 
@@ -69,7 +68,10 @@ There are two field types available in this package which allow you an instant c
 - [select2_from_ajax](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax)
 - [select2_from_ajax_multiple](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax_multiple)
 
-For `select2_from_ajax` also "edit" is available.
+> **Attention:**
+>
+> Edit and delete buttons are only available for  `select2_from_ajax`  
+> Please consider your database constraints when using the delete button!
 
 ### Field Definition
 
@@ -120,6 +122,7 @@ Example:
         
         'create'        => false
         'edit'          => false
+        'delete'        => false
         'create_modal'  => 'path to custom create modal'
         'edit_modal'    => 'path to custom edit modal'
         'attribute'     => '...' // see auto-fill below in readme

@@ -24,12 +24,20 @@ trait HandlesAjaxRequest
             return $this->ajaxEdit();
         }
 
+        if ($mode == 'delete') {
+            return $this->ajaxDelete();
+        }
+
         if (strtolower($request->method()) == 'put') {
             return $this->ajaxStore($request);
         }
 
         if (strtolower($request->method()) == 'patch') {
             return $this->ajaxUpdate($request);
+        }
+
+        if (strtolower($request->method()) == 'delete') {
+            return $this->ajaxDestroy($request->input('id'));
         }
 
         return $this->ajaxIndex($request);
@@ -89,8 +97,27 @@ trait HandlesAjaxRequest
             ->with('id', request()->input('id'))
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
-            ->with('saveAction', $this->getSaveAction())
             ->with('fields', $this->crud->getUpdateFields(request()->input('id')))
+            ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
+            ->with('field_name', request()->input('field_name'))
+            ->with('attribute', request()->input('attribute'))
+            ->render();
+    }
+
+    /**
+     * Returns the HTML that is used for displaying the on-the-fly modal of the deleting an entity
+     * @return string
+     */
+    public function ajaxDelete()
+    {
+        $this->crud->hasAccessOrFail('delete');
+
+        return \View::make('webfactor::modal.delete')
+            ->with('action', 'delete')
+            ->with('id', request()->input('id'))
+            ->with('entry', $this->crud->model::find(request()->input('id')))
+            ->with('entity', $this->getAjaxEntity())
+            ->with('crud', $this->crud)
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
             ->with('field_name', request()->input('field_name'))
             ->with('attribute', request()->input('attribute'))
@@ -150,6 +177,27 @@ trait HandlesAjaxRequest
     }
 
     /**
+     * Checks permission and tries to delete on-the-fly entity.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function ajaxDestroy(int $id)
+    {
+        if (!$this->crud->hasAccess('delete')) {
+            return $this->ajaxRespondNoPermission();
+        }
+
+        try {
+            $this->crud->delete($id);
+        } catch (\Exception $exception) {
+            return response()->json($this->ajaxFormatMessage($exception), 422);
+        }
+
+        return $this->ajaxRespondDeleted();
+    }
+
+    /**
      * Validates the request and returns an error bag if it fails
      *
      * @return mixed
@@ -196,6 +244,16 @@ trait HandlesAjaxRequest
     }
 
     /**
+     * Responses 204 No Content
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function ajaxRespondDeleted()
+    {
+        return response()->json([], 204);
+    }
+
+    /**
      * Responses 422 Error
      *
      * @return \Illuminate\Http\JsonResponse
@@ -222,6 +280,10 @@ trait HandlesAjaxRequest
             $validationErrors .= '</ul>';
 
             return $validationErrors;
+        }
+
+        if ($message instanceof \Exception) {
+            return $message->getMessage();
         }
 
         return $message;
