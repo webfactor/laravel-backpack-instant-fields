@@ -8,7 +8,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create and edit a related CRUD entity on-the-fly while adding/editing/deleting another.
+This is a package for [Laravel Backpack](https://laravel-backpack.readme.io/docs) and provides CRUD field types which allow to create/edit/delete a related CRUD entity on-the-fly while adding/editing another.
 
 ![Screenshot](https://webfactor.de/files/modal_1.png)
 
