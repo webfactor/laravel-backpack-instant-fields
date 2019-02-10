@@ -1,7 +1,7 @@
 {
     "name": "webfactor/laravel-backpack-instant-fields",
     "type": "library",
-    "description": "Instant fields to create related entities on the fly in Laravel Backpack",
+    "description": "Instant fields to create/edit/delete related entities on the fly in Laravel Backpack",
     "keywords": [
         "webfactor",
         "laravel",
