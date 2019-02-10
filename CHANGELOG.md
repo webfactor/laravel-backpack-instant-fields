@@ -21,6 +21,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 2.1.0 - 2019-02-10
+
+### Added
+- delete button!
+- edit/delete buttons will be disabled if no entry is selected
+
 ## 2.0.0 - 2019-02-08
 
 ### Added
