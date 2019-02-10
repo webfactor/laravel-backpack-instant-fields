@@ -68,7 +68,10 @@ There are two field types available in this package which allow you an instant c
 - [select2_from_ajax](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax)
 - [select2_from_ajax_multiple](https://laravel-backpack.readme.io/docs/crud-fields#section-select2_from_ajax_multiple)
 
-> Edit and delete is only available for  `select2_from_ajax`!
+> **Attention:**
+>
+> Edit and delete buttons are only available for  `select2_from_ajax`  
+> Please consider your database constraints when using the delete button!
 
 ### Field Definition
 
