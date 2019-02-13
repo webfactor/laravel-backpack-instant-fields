@@ -2,7 +2,7 @@
     <button
         href="#"
         type="button"
-        class="btn btn-danger {{ $field['value'] ?: 'disabled'}}"
+        class="btn btn-danger {{ isset($field['value']) ?: 'disabled'}}"
         style="border-radius: 0px"
         data-toggle="modal"
         data-id="{{ $field['value'] ?? '' }}"
