@@ -164,16 +164,20 @@ With this package your are also able to add a create button for the foreign CRUD
 
 ### Modal view
 
-By default the modal is loaded automatically by using `entity` in `on_the_fly` of the field definition resulting in `backpack_url($field['on_the_fly']['entity']).'/ajax/create'` in the field blade.
+By default the modals are loaded automatically by using `entity` in `on_the_fly` of the field definition, e.g. resulting in `backpack_url($field['on_the_fly']['entity']).'/ajax/create'` for the create modal.
 
-You can overwrite this behavior by setting a `create_view` attribute:
+You can overwrite this behavior for all modals by setting an attribute:
 
 ```
 'on_the_fly' => [
     'entity' => 'entity',
-    'create_view => 'route/to/modal/html'
+    'create_modal' => 'route/to/modal/html',
+    'edit_modal' => 'route/to/modal/html',
+    'delete_modal' => 'route/to/modal/html',
 ]
 ```
+
+> Please be aware that by using this attributes you will be completely responsible for the content of the modal! The defined request has to provide valid HTML which is then filled in `<div class="modal-content"></div>`
 
 ### Search logic
 
