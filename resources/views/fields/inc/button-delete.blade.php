@@ -7,7 +7,7 @@
         data-toggle="modal"
         data-id="{{ $field['value'] ?? '' }}"
         data-target="#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal"
-        data-load-url="{{ $field['on_the_fly']['delete_modal'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/delete?field_name='.$field['name'].'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
+        data-load-url="{{ $field['on_the_fly']['delete_modal'] ?? backpack_url($field['on_the_fly']['entity']).'/ajax/delete?field_name='.$field['name'].'&delete_modal_view='.($field['on_the_fly']['delete_modal_view'] ?? 'webfactor::modal.delete').'&attribute='.($field['on_the_fly']['attribute'] ?? 'name') }}">
     <i class="fa fa-trash"></i>
     </button>
 </span>

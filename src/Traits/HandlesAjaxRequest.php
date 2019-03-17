@@ -75,7 +75,7 @@ trait HandlesAjaxRequest
     {
         $this->crud->hasAccessOrFail('create');
 
-        return \View::make('webfactor::modal.create')
+        return \View::make($this->getModalView($request, 'create', 'webfactor::modal.create'))
             ->with('action', 'create')
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
@@ -94,7 +94,7 @@ trait HandlesAjaxRequest
     {
         $this->crud->hasAccessOrFail('update');
 
-        return \View::make('webfactor::modal.edit')
+        return \View::make($this->getModalView($request, 'edit', 'webfactor::modal.edit'))
             ->with('action', 'edit')
             ->with('id', $request->input('id'))
             ->with('entity', $this->getAjaxEntity())
@@ -114,7 +114,7 @@ trait HandlesAjaxRequest
     {
         $this->crud->hasAccessOrFail('delete');
 
-        return \View::make('webfactor::modal.delete')
+        return \View::make($this->getModalView($request, 'delete', 'webfactor::modal.delete'))
             ->with('action', 'delete')
             ->with('id', $request->input('id'))
             ->with('entry', $this->crud->model::find($request->input('id')))
@@ -291,5 +291,20 @@ trait HandlesAjaxRequest
         }
 
         return $message;
+    }
+
+    /**
+     * @param Request $request
+     * @param string $mode
+     * @param string $fallbackView
+     * @return array|string|null
+     */
+    private function getModalView(Request $request, string $mode, string $fallbackView)
+    {
+        if (\View::exists($request->input($mode . '_modal_view'))) {
+            return $request->input($mode . '_modal_view');
+        }
+
+        return $fallbackView;
     }
 }
