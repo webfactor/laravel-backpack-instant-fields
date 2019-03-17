@@ -11,7 +11,7 @@
 
             {{ trans('backpack::crud.delete_confirm') }}<br><br>
 
-            {{ $entry->{$attribute} }}
+            {{ $entry->{$request->input('attribute')} }}
 
         </div>
     </div>
@@ -39,7 +39,7 @@
                     $("#{{ $entity }}_delete_modal").modal('hide');
 
                     // Clear select
-                    $("#select2_ajax_{{ $field_name }}").val(null).trigger('change');
+                    $("#select2_ajax_{{ $request->input('field_name') }}").val(null).trigger('change');
                 },
                 error: function (data) {
                     new PNotify({

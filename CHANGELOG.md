@@ -21,6 +21,12 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 2.2.0 - 2019-03-17
+
+### Added
+- modal_view parameters to use own modal view
+- `serialize` parameter to define which current field values should be passed to the foreign CrudController
+
 ## 2.1.0 - 2019-02-10
 
 ### Added

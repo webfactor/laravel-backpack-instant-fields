@@ -4,6 +4,17 @@
     <h3 class="box-title">{{ trans('backpack::crud.add_a_new') }} {{ $crud->entity_name }}</h3>
 @endsection
 
+@php
+    $requestData = [];
+
+    foreach ($request->input() as $key => $item) {
+        $requestData[] = [
+            'name' => $key,
+            'value' => $item,
+        ];
+    }
+@endphp
+
 @section('content')
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
@@ -28,25 +39,32 @@
         $("#create_{{ $entity }}").submit(function (e) {
             e.preventDefault(); // avoid to execute the actual submit of the form.
 
+            var requestData = <?php echo json_encode($requestData); ?>;
+
             $.ajax({
                 type: "PUT",
-                url: "/{{ ltrim($crud->route . '/ajax', '/') }}",
-                data: $("#create_{{ $entity }}").serialize(), // serializes the form's elements.
-                success: function (data) {
-                    new PNotify({
-                        type: "success",
-                        title: "{{ trans('backpack::base.success') }}",
-                        text: "{{ trans('backpack::crud.insert_success') }}"
-                    });
+                    url: "/{{ ltrim($crud->route . '/ajax', '/') }}",
+                        data
+                :
+                    $("#create_{{ $entity }}").serialize() + '&' + $.param(requestData), // serializes the form's elements.
+                        success
+                :
 
-                    $("#{{ $entity }}_create_modal").modal('hide');
+                    function (data) {
+                        new PNotify({
+                            type: "success",
+                            title: "{{ trans('backpack::base.success') }}",
+                            text: "{{ trans('backpack::crud.insert_success') }}"
+                        });
 
-                    // provide auto-fill
+                        $("#{{ $entity }}_create_modal").modal('hide');
 
-                    if ($("#select2_ajax_{{ $field_name }}").length) {
-                        searchfield = $("#select2_ajax_{{ $field_name }}")
+                        // provide auto-fill
+
+                        if ($("#select2_ajax_{{ $request->input('field_name') }}").length) {
+                        searchfield = $("#select2_ajax_{{ $request->input('field_name') }}")
                     } else {
-                        searchfield = $("#select2_ajax_multiple_{{ $field_name }}")
+                        searchfield = $("#select2_ajax_multiple_{{ $request->input('field_name') }}")
                     }
 
                     searchfield.select2('open');
@@ -55,7 +73,7 @@
                     // Dropdown = single, Selection = multiple
                     var search = searchfield.data('select2').dropdown.$search || searchfield.data('select2').selection.$search;
                     // This is undocumented and may change in the future
-                    var userInput = $("#create_{{ $entity }} [name='{{ $attribute }}']").serializeArray();
+                    var userInput = $("#create_{{ $entity }} [name='{{ $request->input('attribute') }}']").serializeArray();
 
                     search.val(userInput[0]['value']);
                     search.trigger('input');

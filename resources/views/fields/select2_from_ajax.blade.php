@@ -97,8 +97,13 @@
             // load create modal content
             $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
                 var loadurl = $(e.relatedTarget).data('load-url');
+                var form = $(e.relatedTarget).closest('form');
 
-                $(this).find('.modal-content').load(loadurl);
+                var data = form.serializeArray().filter(function(index){
+                    return $.inArray(index.name, <?php echo json_encode($field['on_the_fly']['serialize'] ?? []); ?>) >= 0;
+                });
+
+                $(this).find('.modal-content').load(loadurl + '&' + $.param(data));
             });
 
             // load edit/delete modal content

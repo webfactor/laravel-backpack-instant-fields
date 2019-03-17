@@ -42,10 +42,10 @@
 
                     // provide auto-fill
 
-                    if ($("#select2_ajax_{{ $field_name }}").length) {
-                        searchfield = $("#select2_ajax_{{ $field_name }}")
+                    if ($("#select2_ajax_{{ $request->input('field_name') }}").length) {
+                        searchfield = $("#select2_ajax_{{ $request->input('field_name') }}")
                     } else {
-                        searchfield = $("#select2_ajax_multiple_{{ $field_name }}")
+                        searchfield = $("#select2_ajax_multiple_{{ $request->input('field_name') }}")
                     }
 
                     searchfield.val(null).trigger('change');
@@ -55,7 +55,7 @@
                     // Dropdown = single, Selection = multiple
                     var search = searchfield.data('select2').dropdown.$search || searchfield.data('select2').selection.$search;
                     // This is undocumented and may change in the future
-                    var userInput = $("#edit_{{ $entity }} [name='{{ $attribute }}']").serializeArray();
+                    var userInput = $("#edit_{{ $entity }} [name='{{ $request->input('attribute') }}']").serializeArray();
 
                     search.val(userInput[0]['value']);
                     search.trigger('input');
