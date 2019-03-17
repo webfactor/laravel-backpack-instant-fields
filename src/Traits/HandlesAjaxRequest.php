@@ -17,15 +17,15 @@ trait HandlesAjaxRequest
     public function handleAjaxRequest(Request $request, $mode = null)
     {
         if ($mode == 'create') {
-            return $this->ajaxCreate();
+            return $this->ajaxCreate($request);
         }
 
         if ($mode == 'edit') {
-            return $this->ajaxEdit();
+            return $this->ajaxEdit($request);
         }
 
         if ($mode == 'delete') {
-            return $this->ajaxDelete();
+            return $this->ajaxDelete($request);
         }
 
         if (strtolower($request->method()) == 'put') {
@@ -47,6 +47,7 @@ trait HandlesAjaxRequest
      * Provides the search algorithm for the select2 field. Overwrite it in
      * the EntityCrudController if you need some special functionalities
      *
+     * @param Request $request
      * @return mixed
      */
     public function ajaxIndex(Request $request)
@@ -67,9 +68,10 @@ trait HandlesAjaxRequest
 
     /**
      * Returns the HTML that is used for displaying the on-the-fly modal of the adding an entity
+     * @param Request $request
      * @return string
      */
-    public function ajaxCreate()
+    public function ajaxCreate(Request $request)
     {
         $this->crud->hasAccessOrFail('create');
 
@@ -79,48 +81,47 @@ trait HandlesAjaxRequest
             ->with('crud', $this->crud)
             ->with('fields', $this->crud->getCreateFields())
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
-            ->with('field_name', request()->input('field_name'))
-            ->with('attribute', request()->input('attribute'))
+            ->with('request', $request)
             ->render();
     }
 
     /**
      * Returns the HTML that is used for displaying the on-the-fly modal of the editing an entity
+     * @param Request $request
      * @return string
      */
-    public function ajaxEdit()
+    public function ajaxEdit(Request $request)
     {
         $this->crud->hasAccessOrFail('update');
 
         return \View::make('webfactor::modal.edit')
             ->with('action', 'edit')
-            ->with('id', request()->input('id'))
+            ->with('id', $request->input('id'))
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
-            ->with('fields', $this->crud->getUpdateFields(request()->input('id')))
+            ->with('fields', $this->crud->getUpdateFields($request->input('id')))
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
-            ->with('field_name', request()->input('field_name'))
-            ->with('attribute', request()->input('attribute'))
+            ->with('request', $request)
             ->render();
     }
 
     /**
      * Returns the HTML that is used for displaying the on-the-fly modal of the deleting an entity
+     * @param Request $request
      * @return string
      */
-    public function ajaxDelete()
+    public function ajaxDelete(Request $request)
     {
         $this->crud->hasAccessOrFail('delete');
 
         return \View::make('webfactor::modal.delete')
             ->with('action', 'delete')
-            ->with('id', request()->input('id'))
-            ->with('entry', $this->crud->model::find(request()->input('id')))
+            ->with('id', $request->input('id'))
+            ->with('entry', $this->crud->model::find($request->input('id')))
             ->with('entity', $this->getAjaxEntity())
             ->with('crud', $this->crud)
             ->with('title', trans('backpack::crud.add') . ' ' . $this->crud->entity_name)
-            ->with('field_name', request()->input('field_name'))
-            ->with('attribute', request()->input('attribute'))
+            ->with('request', $request)
             ->render();
     }
 
@@ -200,6 +201,8 @@ trait HandlesAjaxRequest
     /**
      * Validates the request and returns an error bag if it fails
      *
+     * @param Request $request
+     * @param array $rules
      * @return mixed
      */
     public function ajaxValidationFails(Request $request, array $rules)
@@ -266,6 +269,7 @@ trait HandlesAjaxRequest
     /**
      * Formats the message for the notification
      *
+     * @param $message
      * @return string
      */
     private function ajaxFormatMessage($message)
