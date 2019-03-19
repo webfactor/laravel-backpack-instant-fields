@@ -13,7 +13,6 @@
 </span>
 <div class="modal fade"
      id="{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal"
-     tabindex="-1"
      role="dialog"
      aria-labelledby="{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal"
      aria-hidden="true">
