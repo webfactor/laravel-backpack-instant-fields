@@ -30,7 +30,7 @@
         @endif
         </select>
 
-        @if (isset($field['on_the_fly']))
+        @if ($field['on_the_fly']['create'] ?? true)
             @include('webfactor::fields.inc.button-add')
         @endif
     </div>
