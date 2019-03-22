@@ -46,6 +46,10 @@
             @include('webfactor::fields.inc.button-edit')
         @endif
 
+        @if ($field['on_the_fly']['crud'] ?? false)
+            @include('webfactor::fields.inc.button-crud')
+        @endif
+
         @if ($field['on_the_fly']['delete'] ?? true)
             @include('webfactor::fields.inc.button-delete')
         @endif
@@ -127,6 +131,7 @@
             // update id for edit/delete modal url
             $("#select2_ajax_{{ $field['name'] }}").change(function (e) {
                 var entry = $("#select2_ajax_{{ $field['name'] }}").select2('data')[0];
+                var editCrud = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_crud']");
                 var editButton = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal']");
                 var deleteButton = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal']");
 
@@ -135,6 +140,7 @@
                     editButton.data("id", entry.id).removeClass('disabled');
                     deleteButton.data("id", entry.id).removeClass('disabled');
                 } else {
+                    editCrud.data("id", "").addClass('disabled');
                     editButton.data("id", "").addClass('disabled');
                     deleteButton.data("id", "").addClass('disabled');
                 }
