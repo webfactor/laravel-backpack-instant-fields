@@ -135,12 +135,12 @@
                 var editButton = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_edit_modal']");
                 var deleteButton = $("[data-target='#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_delete_modal']");
 
-                if (entry.id) {
-                    editCrud.data("id", entry.id).removeClass('disabled');
+                if (entry) {
+                    editCrud.data("id", entry.id).prop('href', editCrud.data('url') + '/' + entry.id + '/edit').removeClass('disabled');
                     editButton.data("id", entry.id).removeClass('disabled');
                     deleteButton.data("id", entry.id).removeClass('disabled');
                 } else {
-                    editCrud.data("id", "").addClass('disabled');
+                    editCrud.data("id", "").prop('href', '#').addClass('disabled');
                     editButton.data("id", "").addClass('disabled');
                     deleteButton.data("id", "").addClass('disabled');
                 }
