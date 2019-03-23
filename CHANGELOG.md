@@ -21,6 +21,11 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 2.3.0 - 2019-03-23
+
+### Added
+- option for simple crud button
+
 ## 2.2.0 - 2019-03-17
 
 ### Added
