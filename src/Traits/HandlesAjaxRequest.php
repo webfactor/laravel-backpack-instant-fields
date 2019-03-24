@@ -28,6 +28,10 @@ trait HandlesAjaxRequest
             return $this->ajaxDelete($request);
         }
 
+        if ($mode == 'table') {
+            return $this->ajaxTable($request);
+        }
+
         if (strtolower($request->method()) == 'put') {
             return $this->ajaxStore($request);
         }
@@ -64,6 +68,29 @@ trait HandlesAjaxRequest
         }
 
         return $field['model']::where($field['attribute'], 'LIKE', '%' . $searchTerm . '%')->paginate($pagination);
+    }
+
+    /**
+     * Provides the search algorithm for the table field. Overwrite it in
+     * the EntityCrudController if you need some special functionalities
+     *
+     * @param Request $request
+     * @return mixed
+     */
+    public function ajaxTable(Request $request)
+    {
+        $field = $this->crud->getFields('update', $request->input('entity_id'))[$request->input('field')];
+
+        $form = collect($request->input('form'));
+        $searchTerm = $request->input('q');
+        $page = $request->input('page');
+        $pagination = $field['pagination'] ?? 10;
+
+        if (isset($field['search_logic']) && is_callable($field['search_logic'])) {
+            return $field['search_logic']($field['model']::query(), $searchTerm, $form)->paginate($pagination);
+        }
+
+        return $this->crud->model::find($request->input('entity_id'))->{$field['relation']}()->paginate($pagination);
     }
 
     /**
