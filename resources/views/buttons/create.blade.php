@@ -4,7 +4,7 @@
         type="button"
         class="{{ $crud->instantCreateButtons[$button->name]['class'] }}"
         data-toggle="modal"
-        data-target="#{{ $crud->instantCreateButtons[$button->name]['name'] }}_modal">
+        data-target="#{{ $crud->instantCreateButtons[$button->name]['name'] }}_create_modal">
         {!! $crud->instantCreateButtons[$button->name]['content'] !!}
     </a>
 @endisset
