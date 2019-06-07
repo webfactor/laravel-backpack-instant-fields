@@ -83,14 +83,14 @@ trait HandlesAjaxRequest
 
         $form = collect($request->input('form'));
         $searchTerm = $request->input('q');
-        $page = $request->input('page');
-        $pagination = $field['pagination'] ?? 10;
 
         if (isset($field['search_logic']) && is_callable($field['search_logic'])) {
-            return $field['search_logic']($field['model']::query(), $searchTerm, $form)->paginate($pagination);
+            $result = $field['search_logic']($field['model']::query(), $searchTerm, $form)->get();
+        } else {
+            $result = $this->crud->model::find($request->input('entity_id'))->{$field['relation']}()->get();
         }
 
-        return $this->crud->model::find($request->input('entity_id'))->{$field['relation']}()->paginate($pagination);
+        return '{"data": ' . $result->toJson() . '}';
     }
 
     /**

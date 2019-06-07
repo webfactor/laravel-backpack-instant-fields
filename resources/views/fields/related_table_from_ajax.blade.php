@@ -1,5 +1,7 @@
 <div @include('crud::inc.field_wrapper_attributes') >
-
+    @if ($field['on_the_fly']['create'] ?? true)
+        @include('webfactor::fields.inc.button-add')
+    @endif
     <table id="related_{{ $field['name'] }}"
            class="table table-striped table-hover display responsive nowrap dataTable dtr-inline"
            width="100%">
@@ -42,9 +44,9 @@
         $(document).ready(function () {
             $.fn.dataTable.moment('DD.MM.YYYY');
 
-            $('#related_{{ $field['name'] }}').DataTable({
+            var table = $('#related_{{ $field['name'] }}').DataTable({
                 ajax: {
-                    url: "{{ backpack_url('task/ajax/table') }}?entity_id={{ $entry->id }}&field={{ $field['name'] }}",
+                    url: "{{ $field['data']['source'] ?? backpack_url('task/ajax/table') }}?entity_id={{ $entry->id }}&field={{ $field['name'] }}",
                     dataSrc: "data"
                 },
                 columns: [
@@ -55,6 +57,22 @@
                     @endforeach
                 ],
                 order: {!! $field['data']['order'] ?? '[[0, "asc"]]' !!}
+            });
+
+            // load create modal content
+            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
+                var loadurl = $(e.relatedTarget).data('load-url');
+                var form = $(e.relatedTarget).closest('form');
+
+                var data = form.serializeArray().filter(function (index) {
+                    return $.inArray(index.name, <?php echo json_encode($field['on_the_fly']['serialize'] ?? []); ?>) >= 0;
+                });
+
+                $(this).find('.modal-content').load(loadurl + '&' + $.param(data));
+            });
+
+            $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on("hidden.bs.modal", function () {
+                table.draw();
             });
         });
     </script>
