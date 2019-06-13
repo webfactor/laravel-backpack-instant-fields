@@ -98,6 +98,8 @@
     <script>
         jQuery(document).ready(function ($) {
 
+            var searchTerm;
+
             // load create modal content
             $("#{{ $field['on_the_fly']['entity'] ?? 'ajax_entity' }}_create_modal").on('show.bs.modal', function (e) {
                 var loadurl = $(e.relatedTarget).data('load-url');
@@ -107,7 +109,7 @@
                     return $.inArray(index.name, <?php echo json_encode($field['on_the_fly']['serialize'] ?? []); ?>) >= 0;
                 });
 
-                $(this).find('.modal-content').load(loadurl + '&' + $.param(data));
+                $(this).find('.modal-content').load(loadurl + '&' + $.param(data) + '&' + $.param({'searchTerm': searchTerm}));
             });
 
             // load edit/delete modal content
@@ -177,6 +179,7 @@
                                 };
                             },
                             processResults: function (data, params) {
+                                searchTerm = params.term;
                                 params.page = params.page || 1;
 
                                 var result = {
