@@ -1,9 +1,12 @@
 @stack('crud_fields_styles')
-<form method="post" id="{{ 'edit_'.$entity }}" accept-charset="UTF-8">
-    {{--'files'=>$crud->hasUploadFields('create')])--}}
+<form method="post" id="{{ $entity.'_'.$action }}" accept-charset="UTF-8">
     {{ csrf_field() }}
     <div class="modal-header">
-        <button type="button" class="close" data-toggle="modal" data-target="#{{ $entity }}_edit_modal" aria-label="Close">
+        <button type="button"
+                class="close"
+                data-toggle="modal"
+                data-target="#{{ $entity.'_'.$action }}_modal"
+                aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
         @yield('header')

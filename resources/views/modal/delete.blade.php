@@ -1,4 +1,4 @@
-@extends('webfactor::modal.delete_layout')
+@extends('webfactor::modal.layout', ['action' => $delete ])
 
 @section('header')
     <h3 class="box-title">{{ trans('backpack::crud.delete') }} {{ $crud->entity_name }}</h3>
