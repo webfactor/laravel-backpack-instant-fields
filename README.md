@@ -269,13 +269,13 @@ In order for this to work properly on multiple columns, you should implement a c
 
 Search logic example:
 ```
-'search_logic' => function ($query, $searchTerm) {
-    return $query->where(function ($q) use ($searchTerm) {
-        collect(explode(' ', $searchTerm))->each(function ($searchTermPart) use ($q) {
-            $q->where(function ($sq) use ($searchTermPart) {
-                $sq->where('company', 'LIKE', '%' . $searchTermPart . '%')
-                   ->orWhere('contact_name', 'LIKE', '%' . $searchTermPart . '%')
-                   ->orWhereRaw('LOWER(JSON_EXTRACT(address, "$.postcode")) LIKE \'"' . strtolower($searchTermPart) . '%\'');
+'search_logic' => function ($query, $searchTerms) {
+    return $query->where(function ($q) use ($searchTerms) {
+        collect(explode(' ', $searchTerms))->each(function ($searchTerm) use ($q) {
+            $q->where(function ($sq) use ($searchTerm) {
+                $sq->where('company', 'LIKE', '%' . $searchTerm . '%')
+                   ->orWhere('contact_name', 'LIKE', '%' . $searchTerm . '%')
+                   ->orWhereRaw('LOWER(JSON_EXTRACT(address, "$.postcode")) LIKE \'%' . strtolower($searchTerm) . '%\'');
             });
         });
     })->orderBy('name');
