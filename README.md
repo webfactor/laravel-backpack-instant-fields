@@ -254,6 +254,34 @@ Instant Fields will try to auto-fill the select2 input after creating a new entr
 ]
 ```
 
+You can also pass an array of `attributes` instead of a single attribute:
+```
+'on_the_fly' => [
+    'entity' => 'entity',
+    'attributes' => [ 
+        'company',
+        'contact_name',
+        'address',
+    ]
+]
+```
+In order for this to work properly on multiple columns, you should implement a custom search logic for the field.
+
+Search logic example:
+```
+'search_logic' => function ($query, $searchTerm) {
+    return $query->where(function ($q) use ($searchTerm) {
+        collect(explode(' ', $searchTerm))->each(function ($searchTermPart) use ($q) {
+            $q->where(function ($sq) use ($searchTermPart) {
+                $sq->where('company', 'LIKE', '%' . $searchTermPart . '%')
+                   ->orWhere('contact_name', 'LIKE', '%' . $searchTermPart . '%')
+                   ->orWhereRaw('LOWER(JSON_EXTRACT(address, "$.postcode")) LIKE \'"' . strtolower($searchTermPart) . '%\'');
+            });
+        });
+    })->orderBy('name');
+```
+
+
 ### Passing current field values to foreign `EntityCrudController`
 
 Sometimes you will need current values to be used for the creation of an foreign entity. You may define `serialize` with the IDs of the fields you need in the store request:
