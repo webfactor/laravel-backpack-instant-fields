@@ -21,6 +21,17 @@ Updates should follow the [Keep a CHANGELOG](http://keepachangelog.com/) princip
 ### Security
 - Nothing
 
+## 3.0.0 - 2019-07-16 (breaking change, depending on your usage
+
+### Added
+- `autofill_attributes`
+
+### Removed
+- `attribute` in favor of `autofill_attributes`
+
+### Changed
+- blade refactoring
+
 ## 2.3.0 - 2019-03-23
 
 ### Added
