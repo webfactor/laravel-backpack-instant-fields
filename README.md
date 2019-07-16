@@ -245,14 +245,39 @@ class EntityCrudController extends CrudController
 ```
 ### Auto-fill after store/update
 
-Instant Fields will try to auto-fill the select2 input after creating a new entry. It will assume that an input field exists with the name `name` and will use its value for the triggered ajax search. If you want to use another field for this, just add `attribute` to the `on_the_fly`-array containing the field name you want to use:
+Instant Fields will try to auto-fill the select2 input after creating a new entry. 
+It will assume that an input field exists with the name `name` and will use its value for the triggered ajax search. 
+
+You can add an `autofill_attributes` array, if you want to define one or multiple auto-fill columns:
 
 ```
 'on_the_fly' => [
     'entity' => 'entity',
-    'attribute' => 'company'
+    'autofill_attributes' => [ 
+        'company',
+        'contact_name',
+        'address',
+    ]
 ]
 ```
+Please note that this only works with columns (or appended accessors).
+
+In order for this to work properly on multiple columns, you should implement a custom search logic for the field.
+
+Search logic example:
+```
+'search_logic' => function ($query, $searchTerms) {
+    return $query->where(function ($q) use ($searchTerms) {
+        collect(explode(' ', $searchTerms))->each(function ($searchTerm) use ($q) {
+            $q->where(function ($sq) use ($searchTerm) {
+                $sq->where('company', 'LIKE', '%' . $searchTerm . '%')
+                   ->orWhere('contact_name', 'LIKE', '%' . $searchTerm . '%')
+                   ->orWhereRaw('LOWER(JSON_EXTRACT(address, "$.postcode")) LIKE \'%' . strtolower($searchTerm) . '%\'');
+            });
+        });
+    })->orderBy('name');
+```
+
 
 ### Passing current field values to foreign `EntityCrudController`
 
