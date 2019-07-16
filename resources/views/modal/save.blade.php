@@ -62,10 +62,17 @@
                     var searchText = '';
                     try {
                         var autofill_attributes = JSON.parse(@json($request->input('autofill_attributes')));
-                        searchText = autofill_attributes.map(function (attr) {
-                            let input = $(modalId + " [name='" + attr + "']").serializeArray()[0];
-                            return input ? input['value'] : '';
-                        }).join(' ');
+                        if (Array.isArray(autofill_attributes)) {
+                            searchText = autofill_attributes.map(function (attr) {
+                                let input = $(modalId + " [name='" + attr + "']").serializeArray()[0];
+                                return input ? input['value'] : '';
+                            }).join(' ');
+                        } else {
+                            let input = $(modalId + " [name='"+ autofill_attributes +"']").serializeArray()[0];
+                            if (input) {
+                                searchText = input['value'];
+                            }
+                        }
                     } catch (e) {
                         let input = $(modalId + " [name='{{ $request->input('autofill_attributes') }}']").serializeArray()[0];
                         if (input) {
