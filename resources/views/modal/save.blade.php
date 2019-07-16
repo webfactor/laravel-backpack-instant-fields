@@ -61,15 +61,13 @@
                     // This is undocumented and may change in the future
                     var searchText = '';
                     try {
-                        var attribute = JSON.parse(@json($request->input('attribute')));
-                        if (Array.isArray(attribute)) {
-                            searchText = attribute.map(function (attr) {
-                                let input = $(modalId + " [name='" + attr + "']").serializeArray()[0];
-                                return input ? input['value'] : '';
-                            }).join(' ');
-                        }
+                        var autofill_attributes = JSON.parse(@json($request->input('autofill_attributes')));
+                        searchText = autofill_attributes.map(function (attr) {
+                            let input = $(modalId + " [name='" + attr + "']").serializeArray()[0];
+                            return input ? input['value'] : '';
+                        }).join(' ');
                     } catch (e) {
-                        let input = $(modalId + " [name='{{ $request->input('attribute') }}']").serializeArray()[0];
+                        let input = $(modalId + " [name='{{ $request->input('autofill_attributes') }}']").serializeArray()[0];
                         if (input) {
                             searchText = input['value'];
                         }
