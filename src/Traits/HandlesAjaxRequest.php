@@ -144,7 +144,7 @@ trait HandlesAjaxRequest
             }
         }
 
-        if (parent::storeCrud($request)) {
+        if (parent::store($request)) {
             return $this->ajaxRespondCreated();
         }
 
@@ -170,7 +170,7 @@ trait HandlesAjaxRequest
             }
         }
 
-        if (parent::updateCrud($request)) {
+        if (parent::update($request)) {
             return $this->ajaxRespondUpdated();
         }
 
